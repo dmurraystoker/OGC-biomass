@@ -1463,7 +1463,7 @@ spring.discharge.2010s <- biomass.data %>%
 	select(Mean_Discharge)
 ```
 
-```{r Discharge t-Tests, echo = TRUE, include = FALSE}
+```{r Discharge t-Tests, results = FALSE}
 ## Winter discharge
 t.test(log(winter.discharge.1980s), log(winter.discharge.2010s),
        paired = FALSE)
@@ -1514,7 +1514,7 @@ fall.water.temperature.2010s <- biomass.data %>%
 
 \newpage
 
-```{r Water Temperature t-Tests, echo = TRUE, include = FALSE}
+```{r Water Temperature t-Tests, results = FALSE}
 ## Winter water temperature
 t.test(log(winter.water.temperature.1980s), log(winter.water.temperature.2010s),
        paired = FALSE)
@@ -1559,7 +1559,7 @@ spring.air.temperature.2010s <- biomass.data %>%
 
 \vspace{10pt}
 
-```{r Air Temperature t-Tests, echo = TRUE, include = FALSE}
+```{r Air Temperature t-Tests, results = FALSE}
 ## Winter air temperature
 t.test(log(winter.air.temperature.1980s), log(winter.air.temperature.2010s),
        paired = FALSE)
@@ -1594,7 +1594,7 @@ spring.precipitation.2010s <- biomass.data %>%
 
 \vspace{10pt}
 
-```{r Precipitation t-Tests, echo = TRUE, include = FALSE}
+```{r Precipitation t-Tests, results = FALSE}
 ## Winter precipitation
 t.test(log(winter.precipitation.1980s), log(winter.precipitation.2010s),
        paired = FALSE)
@@ -1693,7 +1693,7 @@ MannKendall(air.temperature.time.series)
 \newpage
 # Carbon & Discharge Regression
 
-We evaluated the relationship between dissolved organic carbon and discharge using linear regression. Monthly averages of carbon and discharge during our sampling periods (i.e., 1980s = December 1981-November 1983, 2010s = July 2015-August 2017). We fitted the regression using `lm()` and checked assumption using `check_model()`.
+We evaluated the relationship between dissolved organic carbon and discharge using linear regression. Monthly averages of carbon and discharge during our sampling periods (i.e., 1980s = December 1981-November 1983, 2010s = July 2015-August 2017). We fitted the regression using `lm()` and checked assumptions using `check_model()`.
 
 \vspace{10pt}
 
