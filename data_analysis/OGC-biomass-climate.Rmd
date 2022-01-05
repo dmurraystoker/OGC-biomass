@@ -302,7 +302,7 @@ MannKendall(summer.fall.water.temperature$Water_Temperature)
 
 Description goes here.
 
-ANOVAs were conducted for discharge and each climate parameter, testing the effect of period, season, and the interaction with Type II sums-of-squares [`Anova()`]. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+ANOVAs were conducted for discharge and each climate parameter, testing the effect of period, season, and the interaction with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
 
 \vspace{10pt}
 

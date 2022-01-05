@@ -204,7 +204,7 @@ density.2010s <- invertebrate.density.matrix[26:49, ]
 \newpage
 # Biomass & Density ANOVAs
 
-Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares [`Anova()`]. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
 
 \vspace{10pt}
 
@@ -315,7 +315,7 @@ kable(
 \newpage
 # Consumer & Predators ANOVAs
 
-Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares [`Anova()`]. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
 
 \vspace{10pt}
 
