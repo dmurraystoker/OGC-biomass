@@ -1,0 +1,596 @@
+---
+title: "OGC-biomass"
+subtitle: "Environmental Comparisons"
+author: "Kelly Murray Stoker, David Murray-Stoker"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 4
+    fig_caption: yes
+    latex_engine: xelatex
+always_allow_html: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+options(knitr.graphics.error = FALSE)
+knitr::opts_chunk$set(results = "hold", fig.pos = "H", fig.align = "center", out.width = "92.5%")
+kableExtra::usepackage_latex("float")
+```
+
+```{r Load Packages for R Markdown, include = FALSE}
+library(kableExtra)
+library(knitr)
+```
+
+```{r Load Packages, include = FALSE}
+## Load the tidyverse
+library(tidyverse)
+
+## Load packages for data management and analysis
+library(agricolae)
+library(car)
+library(dplyr)
+library(easystats)
+library(Kendall)
+library(waterData)
+```
+
+
+
+\newpage
+## Load Data
+
+```{r Load Data, echo = TRUE}
+## Read in sampling period environmental data
+environmental.data <- read_csv("data/OGC_final_biomass_data.csv", show_col_types = FALSE) %>%
+	select(UID, Year, Season, Period, CaCO, Carbon, Conductivity, DO, pH, Water_Temperature,
+				 Air_Temperature, Precipitation, Mean_Discharge)
+
+## Set variables as factors
+environmental.data$UID            <- as_factor(environmental.data$UID)
+environmental.data$Year           <- as_factor(environmental.data$Year)
+environmental.data$Season         <- as_factor(environmental.data$Season)
+environmental.data$Period         <- as_factor(environmental.data$Period)
+```
+
+
+
+\newpage
+# USGS Discharge Data
+
+We obtained average daily discharge (m^3^ s^-1^) and water chemistry metrics from the United States Geological Survey (USGS, gage 02202500) to calculate the average discharge over a two-week period preceding each sampling date. Discharge data were downloaded using the `waterData` package. Water and air temperature data were collected from the USGS water quality dataset, and precipitation data were gathered from the National Weather Service Forecast Office in Louisville, GA.
+
+\vspace{10pt}
+
+```{r Water Data: Data Management, echo = TRUE}
+## List of start dates
+start.dates <- c("1981-12-02", "1982-01-09", "1982-02-15", "1982-03-09",
+                 "1982-04-02", "1982-04-30", "1982-05-25", "1982-06-26",
+                 "1982-07-23", "1982-08-19", "1982-09-15", "1982-10-15",
+                 "1982-11-18", "1982-12-24", "1983-01-22", "1983-02-18",
+                 "1983-03-25", "1983-04-23", "1983-05-20", "1983-06-17",
+                 "1983-07-15", "1983-08-13", "1983-09-09", "1983-10-08",
+                 "1983-11-04",
+                 "2015-06-26", "2015-07-27", "2015-08-29", "2015-10-02",
+                 "2015-11-06", "2015-12-03", "2016-01-21", "2016-02-24",
+                 "2016-03-30", "2016-04-27", "2016-05-31", "2016-08-03",
+                 "2016-09-05", "2016-10-05", "2016-11-02", "2016-11-30",
+                 "2017-01-06", "2017-02-10", "2017-03-08", "2017-04-12",
+                 "2017-05-03", "2017-05-29", "2017-07-05", "2017-08-08")
+
+## List of end dates
+end.dates <- c("1981-12-16", "1982-01-23", "1982-03-01", "1982-03-23",
+               "1982-04-16", "1982-05-14", "1982-06-08", "1982-07-10",
+               "1982-08-06", "1982-09-02", "1982-09-29", "1982-10-29",
+               "1982-12-02", "1983-01-07", "1983-02-05", "1983-03-04",
+               "1983-04-08", "1983-05-07", "1983-06-03", "1983-07-01",
+               "1983-07-29", "1983-08-27", "1983-09-23", "1983-10-22",
+               "1983-11-18",
+               "2015-07-10", "2015-08-10", "2015-09-12", "2015-10-16",
+               "2015-11-20", "2015-12-17", "2016-02-04", "2016-03-09",
+               "2016-04-13", "2016-05-11", "2016-06-14", "2016-08-17", 
+               "2016-09-19", "2016-10-19", "2016-11-16", "2016-12-14", 
+               "2017-01-20", "2017-02-24", "2017-03-22", "2017-04-26",
+               "2017-05-17", "2017-06-12", "2017-07-19", "2017-08-22")
+
+## Bind start and end dates into a single dataframe
+flow.dates <- as.data.frame(cbind(start.dates, end.dates))
+
+## Add UID identifier to flow dates
+flow.dates$UID <- environmental.data$UID
+```
+
+\newpage
+
+```{r Water Data: Download, eval = FALSE}
+## Empty dataframe for discharge data
+discharge.data <- tibble(data.frame(matrix(0, nrow = 15, ncol = 49)))
+
+## Append data for all dates
+for(x in 1:49){
+  require(waterData)
+  bin.1 <- importDVs(staid = "02202500", code = "00060", stat = "00003",
+                     sdate = flow.dates[x, 1],
+                     edate = flow.dates[x, 2])
+  bin.2 <- cleanUp(bin.1, task = "fix", replace = 0.001)
+  bin.3 <- fillMiss(bin.1, block = 2, pmiss = 5, model = "trend", 
+                    smooth = FALSE, log = "y")
+  bin.4 <- bin.3[, c(2, 3)]
+  colnames(bin.4) <- c(flow.dates[x, 3])
+  discharge.data[, x] <- bin.4[, 1]
+}
+```
+
+\vspace{10pt}
+
+```{r Water Data; Cleanup, eval = FALSE}
+## Calculate two week mean & convert from ft3 to m3
+mean.discharge <- sapply(discharge.data, mean)
+metric.shift   <- (mean.discharge / 35.315)
+
+## Create mean discharge dataframe
+metric.shift            <- tibble(mean.discharge)
+metric.shift$UID        <- environmental.data$UID
+```
+
+
+
+\newpage
+# Sampling Period Environmental Comparisons
+
+\vspace{10pt}
+
+## Environmental Variable ANOVAs
+
+ANOVAs were conducted for discharge, precipitation, water temperature, and air temperature to test the effects of period, season, and the interaction with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups within the ANOVA. Effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+
+
+\newpage
+
+### Discharge
+
+```{r Discharge ANOVA, echo = TRUE}
+discharge.anova <- lm(
+	log(Mean_Discharge) ~ Period * Season, data = environmental.data
+	)
+```
+
+\vspace{10pt}
+
+```{r Discharge ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the discharge ANOVA."}
+check_model(discharge.anova)
+```
+
+\vspace{10pt}
+
+```{r Discharge ANOVA: ANOVA Table, echo = FALSE}
+kable(
+	Anova(discharge.anova, type = "II"),
+	booktabs = TRUE,
+	digits = 3,
+	caption = "ANOVA results for discharge by period, season, and the interaction.",
+	col.names = c("Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Discharge ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+discharge.season.groups <- HSD.test(
+	discharge.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	discharge.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in discharge.",
+	col.names = c("Discharge", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Discharge ANOVA Tukey HSD: Season and Period, echo = FALSE}
+## Tukey groups
+discharge.season.period.groups <- HSD.test(
+	discharge.anova, trt = c("Season", "Period"), group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	discharge.season.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in discharge.",
+	col.names = c("Discharge", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Discharge ANOVA: Effect Sizes, echo = TRUE}
+## Calculating partial eta-squared for each factor in the discharge ANOVA
+discharge.anova.eta.squared <- eta_squared(
+	Anova(discharge.anova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Discharge ANOVA: Effect Size Table, echo = FALSE}
+kable(
+	discharge.anova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+
+\newpage
+### Precipitation
+
+```{r Precipitation ANOVA, echo = TRUE}
+precipitation.anova <- lm(
+	Precipitation ~ Period * Season, data = environmental.data
+	)
+```
+
+\vspace{10pt}
+
+```{r Precipitation ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the precipitation ANOVA."}
+check_model(precipitation.anova)
+```
+
+\vspace{10pt}
+
+```{r Precipitation ANOVA: ANOVA Table, echo = FALSE}
+kable(
+	Anova(precipitation.anova, type = "II"),
+	booktabs = TRUE,
+	digits = 3,
+	caption = "ANOVA results for precipitation by period, season, and the interaction.",
+	col.names = c("Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Precipitation ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+precipitation.season.groups <- HSD.test(
+	precipitation.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	precipitation.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in precipitation.",
+	col.names = c("Precipitation", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Precipitation ANOVA: Effect Sizes, echo = TRUE}
+## Calculating partial eta-squared for each factor in the precipitation ANOVA
+precipitation.anova.eta.squared <- eta_squared(
+	Anova(precipitation.anova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Precipitation ANOVA: Effect Size Table, echo = FALSE}
+kable(
+	precipitation.anova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+
+\newpage
+### Water Temperature
+
+```{r Water Temperature ANOVA, echo = TRUE}
+water.temperature.anova <- lm(
+	Water_Temperature ~ Period * Season, data = environmental.data
+	)
+```
+
+\vspace{10pt}
+
+```{r Water Temperature ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the water temperature ANOVA."}
+check_model(water.temperature.anova)
+```
+
+\vspace{10pt}
+
+```{r Water Temperature ANOVA: ANOVA Table, echo = FALSE}
+kable(
+	Anova(water.temperature.anova, type = "II"),
+	booktabs = TRUE,
+	digits = 3,
+	caption = "ANOVA results for water.temperature by period, season, and the interaction.",
+	col.names = c("Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Water Temperature ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+water.temperature.season.groups <- HSD.test(
+	water.temperature.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	water.temperature.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in water temperature.",
+	col.names = c("Water Temperature", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Water Temperature ANOVA: Effect Sizes, echo = TRUE}
+## Calculating partial eta-squared for each factor in the water temperature ANOVA
+water.temperature.anova.eta.squared <- eta_squared(
+	Anova(water.temperature.anova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Water Temperature ANOVA: Effect Size Table, echo = FALSE}
+kable(
+	water.temperature.anova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+
+\newpage
+### Air Temperature
+
+```{r Air Temperature ANOVA, echo = TRUE}
+air.temperature.anova <- lm(
+	Air_Temperature ~ Period * Season, data = environmental.data
+	)
+```
+
+\vspace{10pt}
+
+```{r Air Temperature ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the air temperature ANOVA."}
+check_model(air.temperature.anova)
+```
+
+\vspace{10pt}
+
+```{r Air Temperature ANOVA: ANOVA Table, echo = FALSE}
+kable(
+	Anova(air.temperature.anova, type = "II"),
+	booktabs = TRUE,
+	digits = 3,
+	caption = "ANOVA results for air.temperature by period, season, and the interaction.",
+	col.names = c("Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Air Temperature ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+air.temperature.season.groups <- HSD.test(
+	air.temperature.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	air.temperature.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in air temperature.",
+	col.names = c("Air Temperature", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Air Temperature ANOVA: Effect Sizes, echo = TRUE}
+## Calculating partial eta-squared for each factor in the air temperature ANOVA
+air.temperature.anova.eta.squared <- eta_squared(
+	Anova(air.temperature.anova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Air Temperature ANOVA: Effect Size Table, echo = FALSE}
+kable(
+	air.temperature.anova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+
+
+\newpage
+# Long-Term Environmental Comparisons
+
+## Data Management
+
+We obtained historical USGS discharge data from December 1969 to November 2018 to determine average daily discharge for the winter-spring season of each year. Water and air temperature data collected from 1974 until 2018 were also obtained from the USGS water quality dataset. Precipitation data from 1970 until 2018 were obtained from the National Weather Service Forecast Office in Louisville, GA. We then filtered the long-term environmental data to only include the winter-spring season group (winter months = December, January, and February; spring months = March, April, and May), which are important for the flood pulse into the Ogeechee River. Mean values were then aggregated by year to generate a mean winter-spring value per year for use in time series analyses. Trends in the the time series were analyzed with Mann-Kendall tests using `MannKendall()`.
+
+\vspace{10pt}
+
+```{r Load Long-Term Environmental Data, echo = TRUE}
+## Read in long-term environmental data
+long.term.environmental.data <- read_csv(
+	"data/OGC_long_term_environmental_data.csv", show_col_types = FALSE)
+
+## Subset data by season groups
+winter.spring.data <- long.term.environmental.data %>%
+	filter(Season_Group == "WinterSpring")
+```
+
+\vspace{10pt}
+
+```{r Data Management: Winter-Spring, echo = TRUE}
+## Aggregate mean values by year for the winter-spring data
+
+## Winter-spring discharge
+winter.spring.discharge <- aggregate(
+	Mean_Discharge ~ Year,
+	data = winter.spring.data,
+	FUN = mean
+	)
+
+## Winter-spring precipitation
+winter.spring.precipitation <- aggregate(
+	Precipitation ~ Year,
+	data = winter.spring.data,
+	FUN = mean
+	) %>%
+	na.omit()
+
+## Winter-spring water temperature
+winter.spring.water.temperature <- aggregate(
+	Water_Temperature ~ Year,
+	data = winter.spring.data,
+	FUN = mean
+	) %>%
+	na.omit()
+
+## Winter-spring air temperature
+winter.spring.air.temperature <- aggregate(
+	Air_Temperature ~ Year,
+	data = winter.spring.data,
+	FUN = mean
+	) %>%
+	na.omit()
+```
+
+
+
+\newpage
+## Mann-Kendall Tests on Winter-Spring Trends
+
+We assessed temporal trends in discharge, precipitation, water temperature, and air temperature using Mann-Kendall tests for the winter-spring season group (i.e., flood-prone seasons). We calculated monthly averages for each variable, and then assessed a shift in the time series using `MannKendall()`.
+
+\vspace{10pt}
+
+```{r Winter-Spring: Discharge, results = FALSE}
+MannKendall(winter.spring.discharge$Mean_Discharge)
+# tau = -0.248, P = 0.012
+```
+
+\vspace{10pt}
+
+```{r Winter-Spring: Precipitation, results = FALSE}
+MannKendall(winter.spring.precipitation$Precipitation)
+# tau = -0.087, P = 0.384
+```
+
+\vspace{10pt}
+
+```{r Winter-Spring: Air Temperature, results = FALSE}
+MannKendall(winter.spring.air.temperature$Air_Temperature)
+# tau = -0.11, P = 0.270
+```
+
+\vspace{10pt}
+
+```{r Winter-Spring: Water Temperature, results = FALSE}
+MannKendall(winter.spring.water.temperature$Water_Temperature)
+# tau = 0.442, P < 0.001
+```
+
+
+
+
+
+```{r Save Workspace, include = FALSE}
+## Save workspace
+save.image("data_analysis/OGC-biomass-environmental_comparisons-workspace.RData")
+```
+
+
+
+\newpage
+# R Session Information
+
+```{r R Environment, echo = FALSE}
+df_session_platform <- devtools::session_info()$platform %>% 
+  unlist(.) %>% 
+  as.data.frame(.) %>% 
+  rownames_to_column(.)
+
+colnames(df_session_platform) <- c("Setting", "Value")
+
+kable(
+  df_session_platform, 
+  booktabs = TRUE,
+  caption = "R session information for transparency and reproducing results."
+) %>% 
+  kable_styling(
+  	full_width = FALSE,
+  	latex_options = c("HOLD_position", "striped")
+  	) 
+```
+
+```{r R Packages, echo = FALSE}
+df_session_packages <- devtools::session_info()$packages %>% 
+  as.data.frame(.) %>% 
+  filter(attached == TRUE) %>% 
+  dplyr::select(loadedversion, date) %>% 
+  rownames_to_column
+
+colnames(df_session_packages) <- c("Package", "Loaded Version", "Date")
+
+kable(
+  df_session_packages, 
+  booktabs = TRUE,
+  caption = "Packages for data management and analysis."
+  ) %>%
+	kable_styling(
+		full_width = FALSE,
+  	latex_options = c("HOLD_position", "striped")
+  	) 
+```
+
+
+
+
+
