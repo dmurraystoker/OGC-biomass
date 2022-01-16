@@ -28,11 +28,11 @@ library(knitr)
 library(tidyverse)
 
 ## Load packages for data management and analysis
+library(agricolae)
 library(broom)
 library(car)
 library(easystats)
 library(indicspecies)
-library(Kendall)
 library(reshape2)
 library(waterData)
 library(vegan)
@@ -40,7 +40,7 @@ library(vegan)
 
 
 \newpage
-# Data Management
+# Raw Data Management
 
 Raw data were imported and compiled for each of the two sampling periods, 1980s and 2010s. Subsets were merged or cast as needed for later analyses. Raw data were initially managed in the R environment, but final data management tasks were performed in Microsoft Excel after exporting the  data; final data files are imported from csv files.
 
@@ -204,7 +204,7 @@ density.2010s <- invertebrate.density.matrix[26:49, ]
 \newpage
 # Biomass & Density ANOVAs
 
-Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups for influential factors in the ANOVA.
 
 \vspace{10pt}
 
@@ -212,7 +212,7 @@ Biomass and density were compared by sampling period, season, and the interactio
 
 ```{r Biomass ANOVA, echo = TRUE}
 biomass.anova <- lm(
-	Summed_Biomass ~ Period * Season, data = biomass.data
+	log(Summed_Biomass) ~ Period * Season, data = biomass.data
 	)
 ```
 
@@ -232,6 +232,24 @@ kable(
 	caption = "ANOVA results for biomass by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Biomass ANOVA Tukey HSD: Period, echo = FALSE}
+## Tukey groups
+biomass.period.groups <- HSD.test(
+	biomass.anova, trt = "Period", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	biomass.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to periods differing in biomass.",
+	col.names = c("Biomass", "Grouping")
+	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -289,6 +307,42 @@ kable(
 
 \newpage
 
+```{r Density ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+density.season.groups <- HSD.test(
+	density.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	density.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in density.",
+	col.names = c("Density", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Density ANOVA Tukey HSD: Season and Period, echo = FALSE}
+## Tukey groups
+density.season.period.groups <- HSD.test(
+	density.anova, trt = c("Season", "Period"), group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	density.season.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in density.",
+	col.names = c("Density", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
 ```{r Density ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 density.anova.eta.squared <- eta_squared(
@@ -315,7 +369,7 @@ kable(
 \newpage
 # Consumer & Predators ANOVAs
 
-Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups for influential factors in the ANOVA.
 
 \vspace{10pt}
 
@@ -377,6 +431,43 @@ kable(
 ```
 
 \newpage
+
+```{r Consumer Biomass ANOVA Tukey HSD: Period, echo = FALSE}
+## Tukey groups
+consumer.biomass.period.groups <- HSD.test(
+	consumer.biomass.anova, trt = "Period", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	consumer.biomass.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to periods differing in consumer biomass.",
+	col.names = c("Consumer Biomass", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Consumer Biomass ANOVA Tukey HSD: Season and Period, echo = FALSE}
+## Tukey groups
+consumer.biomass.season.period.groups <- HSD.test(
+	consumer.biomass.anova, trt = c("Season", "Period"), group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	consumer.biomass.season.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to season and period groups differing in consumer biomass.",
+	col.names = c("Consumer Biomass", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
 ```{r Consumer Biomass ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 consumer.biomass.anova.eta.squared <- eta_squared(
@@ -424,6 +515,42 @@ kable(
 	caption = "ANOVA results for consumer density by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
+```{r Consumer Density ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+consumer.density.season.groups <- HSD.test(
+	consumer.density.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	consumer.density.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in consumer density.",
+	col.names = c("Consumer Density", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Consumer Density ANOVA Tukey HSD: Season and Period, echo = FALSE}
+## Tukey groups
+consumer.density.season.period.groups <- HSD.test(
+	consumer.density.anova, trt = c("Season", "Period"), group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	consumer.density.season.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to season and period groups differing in consumer density.",
+	col.names = c("Consumer Density", "Grouping")
+	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -483,6 +610,24 @@ kable(
 
 \newpage
 
+```{r Predator Biomass ANOVA Tukey HSD: Season, echo = FALSE}
+## Tukey groups
+predator.biomass.season.groups <- HSD.test(
+	predator.biomass.anova, trt = "Season", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	predator.biomass.season.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to seasons differing in predator biomass.",
+	col.names = c("Predator Biomass", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
 ```{r Predator Biomass ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 predator.biomass.anova.eta.squared <- eta_squared(
@@ -534,6 +679,25 @@ kable(
 ```
 
 \newpage
+
+```{r Predator Density ANOVA Tukey HSD: Period, echo = FALSE}
+## Tukey groups
+predator.density.period.groups <- HSD.test(
+	predator.density.anova, trt = "Period", group = TRUE
+	)
+
+## Export the Tukey group table
+kable(
+	predator.density.period.groups$groups,
+	booktabs = TRUE, 
+	caption = "Tukey groups assigned to periods differing in predator density.",
+	col.names = c("Predator Density", "Grouping")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\newpage
+
 ```{r Predator Density ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 predator.density.anova.eta.squared <- eta_squared(

@@ -143,7 +143,7 @@ metric.shift$UID        <- environmental.data$UID
 
 ## Environmental Variable ANOVAs
 
-ANOVAs were conducted for discharge, precipitation, water temperature, and air temperature to test the effects of period, season, and the interaction with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups within the ANOVA. Effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
+ANOVAs were conducted for discharge, precipitation, water temperature, and air temperature to test the effects of period, season, and the interaction with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups for influential factors in the ANOVA. Effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`.
 
 
 \newpage
@@ -205,7 +205,7 @@ discharge.season.period.groups <- HSD.test(
 kable(
 	discharge.season.period.groups$groups,
 	booktabs = TRUE, 
-	caption = "Tukey groups assigned to seasons differing in discharge.",
+	caption = "Tukey groups assigned to season and period groups differing in discharge.",
 	col.names = c("Discharge", "Grouping")
 	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
