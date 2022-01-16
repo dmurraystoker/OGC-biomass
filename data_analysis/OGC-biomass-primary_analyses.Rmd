@@ -1604,34 +1604,38 @@ kable(
 
 
 \newpage
-# Carbon & Discharge Regression
+# Carbon & Discharge ANCOVA
 
-We evaluated the relationship between dissolved organic carbon and discharge using linear regression. Monthly averages of carbon and discharge during our sampling periods (i.e., 1980s = December 1981-November 1983, 2010s = July 2015-August 2017). We fitted the regression using `lm()` and checked assumptions using `check_model()`.
+We evaluated the relationship between dissolved organic carbon and discharge using an ANCOVA. Monthly averages of carbon and discharge during our sampling periods (i.e., 1980s = December 1981-November 1983, 2010s = July 2015-August 2017) were used for this analysis. We structured the ANCOVA as:
+
+$$ Carbon = \alpha + \beta_{1}(\operatorname{ln(Discharge)}) + \beta_{2}(\operatorname{Period}) + \beta_{3}(\operatorname{ln(Discharge)} \times \operatorname{Period}) + \epsilon$$
+
+with the ANCOVA fitted using `lm()` and model assumptions checked using `check_model()`. Influence of terms within the model was estimated by Type II sums-of-squares using the `Anova()` function.
 
 \vspace{10pt}
 
-```{r Carbon & Discharge Regression, echo = TRUE}
-carbon.discharge.regression <- lm(
-	log(Carbon) ~ log(Mean_Discharge),
+```{r Carbon & Discharge ANCOVA, echo = TRUE}
+carbon.discharge.ANCOVA <- lm(
+	log(Carbon) ~ log(Mean_Discharge) * Period,
 	data = biomass.data
 	)
 ```
 
 \vspace{10pt}
 
-```{r Carbon & Discharge Regression: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the carbon and discharge regression."}
-check_model(carbon.discharge.regression)
+```{r Carbon & Discharge ANCOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the carbon by discharge ANCOVA."}
+check_model(carbon.discharge.ANCOVA)
 ```
 
 \vspace{10pt}
 
-```{r Carbon & Discharge Regression: Summary Table, echo = FALSE}
+```{r Carbon & Discharge ANCOVA: Summary Table, echo = FALSE}
 kable(
-	tidy(summary(carbon.discharge.regression)),
+	tidy(Anova(carbon.discharge.ANCOVA, type = "II")),
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Summary of the carbon by discharge regression.",
-	col.names = c("Term", "Estimate", "SE", "t-statistic", "P-value")
+	caption = "Summary of the carbon by discharge ANCOVA.",
+	col.names = c("Term", "Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
