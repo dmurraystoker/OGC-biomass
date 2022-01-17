@@ -253,7 +253,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Biomass ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
@@ -341,7 +341,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Density ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
@@ -626,7 +626,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Predator Biomass ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
@@ -696,7 +696,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Predator Density ANOVA: Effect Sizes, echo = TRUE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
@@ -1615,7 +1615,7 @@ with the ANCOVA fitted using `lm()` and model assumptions checked using `check_m
 \vspace{10pt}
 
 ```{r Carbon & Discharge ANCOVA, echo = TRUE}
-carbon.discharge.ANCOVA <- lm(
+carbon.discharge.ancova <- lm(
 	log(Carbon) ~ log(Mean_Discharge) * Period,
 	data = biomass.data
 	)
@@ -1624,18 +1624,41 @@ carbon.discharge.ANCOVA <- lm(
 \vspace{10pt}
 
 ```{r Carbon & Discharge ANCOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the carbon by discharge ANCOVA."}
-check_model(carbon.discharge.ANCOVA)
+check_model(carbon.discharge.ancova)
 ```
 
 \vspace{10pt}
 
 ```{r Carbon & Discharge ANCOVA: Summary Table, echo = FALSE}
 kable(
-	tidy(Anova(carbon.discharge.ANCOVA, type = "II")),
+	tidy(Anova(carbon.discharge.ancova, type = "II")),
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Summary of the carbon by discharge ANCOVA.",
 	col.names = c("Term", "Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Carbon & Discharge ANCOVA: Effect Sizes, echo = TRUE}
+## Calculating partial eta-squared for each factor in the discharge ANOVA
+carbon.discharge.ancova.eta.squared <- eta_squared(
+	Anova(carbon.discharge.ancova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Carbon & Discharge ANCOVA: Effect Size Table, echo = FALSE}
+kable(
+	carbon.discharge.ancova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the carbon by discharge ANCOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
