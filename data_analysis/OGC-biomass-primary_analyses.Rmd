@@ -828,7 +828,7 @@ Cheumatopsyche.biomass.2010s <- biomass.2010s$Cheumatopsyche
 
 \vspace{10pt}
 
-```{r Biomass Contributions: Dominant Caddisflies, echo = TRUE, include = FALSE}
+```{r Biomass Contributions: Dominant Caddisflies, echo = TRUE, eval = FALSE}
 ## Hydropsyche
 (mean(Hydropsyche.biomass.2010s)/mean(Hydropsyche.biomass.1980s))*100
 # 2010 biomass = 34.31% of 1980s
@@ -977,7 +977,7 @@ group.3.consumer.density.2010s.total.density <- sum(group.3.consumer.density.201
 
 \vspace{10pt}
 
-```{r Consumer Biomass Change, echo = TRUE, include = FALSE}
+```{r Consumer Biomass Change, echo = TRUE, eval = FALSE}
 ## 1980s Consumers
 (group.1.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
 # Group 1 = 89.22%
@@ -1105,7 +1105,7 @@ group.3.predator.density.2010s.total.density <- sum(group.3.predator.density.201
 
 \vspace{10pt}
 
-```{r Predator Biomass Change, echo = TRUE, include = FALSE}
+```{r Predator Biomass Change, echo = TRUE, eval = FALSE}
 ## 1980s Predators
 (group.1.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
 # Group 1 = 97.08%
