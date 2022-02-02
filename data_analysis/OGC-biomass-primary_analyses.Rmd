@@ -1775,7 +1775,7 @@ corrplot::corrplot(
 \newpage
 # Biomass Contributions
 
-Biomass contributions were calculated for consumer and predator groups. We again illustrated numerical differences without conducting any null hypothesis significance tests.
+Biomass contributions were calculated for consumer and predator groups.
 
 \vspace{10pt}
 
