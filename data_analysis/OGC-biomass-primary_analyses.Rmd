@@ -36,6 +36,9 @@ library(indicspecies)
 library(reshape2)
 library(waterData)
 library(vegan)
+
+## Load the final workspace for reproducibility
+#load("data_analysis/OGC-biomass-primary_analyses-workspace.RData")
 ```
 
 
@@ -255,7 +258,7 @@ kable(
 
 \vspace{10pt}
 
-```{r Biomass ANOVA: Effect Sizes, echo = TRUE}
+```{r Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 biomass.anova.eta.squared <- eta_squared(
 	Anova(biomass.anova, type = "II"),
@@ -343,7 +346,7 @@ kable(
 
 \vspace{10pt}
 
-```{r Density ANOVA: Effect Sizes, echo = TRUE}
+```{r Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 density.anova.eta.squared <- eta_squared(
 	Anova(density.anova, type = "II"),
@@ -468,7 +471,7 @@ kable(
 
 \newpage
 
-```{r Consumer Biomass ANOVA: Effect Sizes, echo = TRUE}
+```{r Consumer Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 consumer.biomass.anova.eta.squared <- eta_squared(
 	Anova(consumer.biomass.anova, type = "II"),
@@ -556,7 +559,7 @@ kable(
 
 \newpage
 
-```{r Consumer Density ANOVA: Effect Sizes, echo = TRUE}
+```{r Consumer Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 consumer.density.anova.eta.squared <- eta_squared(
 	Anova(consumer.density.anova, type = "II"),
@@ -628,7 +631,7 @@ kable(
 
 \vspace{10pt}
 
-```{r Predator Biomass ANOVA: Effect Sizes, echo = TRUE}
+```{r Predator Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 predator.biomass.anova.eta.squared <- eta_squared(
 	Anova(predator.biomass.anova, type = "II"),
@@ -698,7 +701,7 @@ kable(
 
 \vspace{10pt}
 
-```{r Predator Density ANOVA: Effect Sizes, echo = TRUE}
+```{r Predator Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 predator.density.anova.eta.squared <- eta_squared(
 	Anova(predator.density.anova, type = "II"),
@@ -791,9 +794,9 @@ predator.size.data$size.group <- as.numeric(predator.size.groups)
 
 
 \newpage
-# Percent Biomass Change
+# Biomass Change
 
-We quantified the percent biomass change in size groupings between sampling periods by illustrating numerical differences. We also compared differences in biomass of three dominant caddisfly taxa. We did not conduct any null hypothesis significance tests for this component of the study.
+We quantified the biomass change in size groupings between sampling periods by illustrating numerical differences. We also compared differences in biomass of three dominant caddisfly taxa.
 
 \vspace{10pt}
 
@@ -807,6 +810,293 @@ summed.biomass.2010s       <- full.summed.biomass.vector[26:49]
 percent.biomass.change <- (mean(summed.biomass.2010s)/mean(summed.biomass.1980s))*100
 # 2010s biomass = 60.28% of 1980s biomass
 ```
+
+
+
+\newpage
+# Biomass Change
+
+We numerically evaluated changes in biomass by size groupings for consumers and predators.
+
+\vspace{10pt}
+
+## Consumers
+
+Consumer taxa within each size grouping:
+
++ Group 1: Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae, Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia,Elmidae, Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia, Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae, Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis, Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx, Tipulidae, Triaenodes, Trichoptera, Tricorythodes
++ Group 2: Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa
++ Group 3: Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche
+
+```{r Biomass Change: Consumer Data Management, echo = TRUE}
+## Consumer data management
+# 1980s
+consumer.biomass.1980s <- biomass.data %>%
+	filter(Period == "1980") %>%
+	select(Amphinemura:Tricorythodes) %>%
+	mutate(summed_biomass = rowSums(.))
+
+# Sum all biomass for the 1980s consumers
+consumer.biomass.1980s.total.biomass <- sum(consumer.biomass.1980s$summed_biomass)
+# Summed biomass = 204899.2
+
+# 2010s
+consumer.biomass.2010s <- biomass.data %>%
+	filter(Period == "2010") %>%
+	select(Amphinemura:Tricorythodes) %>%
+	mutate(summed_biomass = rowSums(.))
+
+# Sum all biomass for the 2010s consumers
+consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$summed_biomass)
+# Summed biomass = 97934.14
+```
+
+\newpage
+
+```{r Consumers: 1980s Group 1 Biomass, echo = TRUE}
+## 1980s consumers group 1 taxa
+group.1.consumer.biomass.1980s <- consumer.biomass.1980s %>%
+	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
+				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
+				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s consumers group 1 total biomass
+group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.1980s$summed_biomass)
+# Summed biomass = 78968.09
+```
+
+\vspace{10pt}
+
+```{r Consumers: 1980s Group 2 Biomass, echo = TRUE}
+## 1980s consumers group 2 taxa
+group.2.consumer.biomass.1980s <- consumer.biomass.1980s %>%
+	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s consumers group 2 total biomass
+group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.1980s$summed_biomass)
+# Summed biomass = 116946.4
+```
+
+\vspace{10pt}
+
+```{r Consumers: 1980s Group 3 Biomass, echo = TRUE}
+## 1980s consumers group 3 taxa
+group.3.consumer.biomass.1980s <- consumer.biomass.1980s %>%
+	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s consumers group 3 total biomass
+group.3.consumer.biomass.1980s.total.biomass <- sum(group.3.consumer.biomass.1980s$summed_biomass)
+# Summed biomass = 8984.69
+```
+
+\newpage
+
+```{r Consumers: 2010s Group 1 Biomass, echo = TRUE}
+## 2010s consumers group 1 taxa
+group.1.consumer.biomass.2010s <- consumer.biomass.2010s %>%
+	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae, 
+				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae, 
+				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s consumers group 1 total biomass
+group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.2010s$summed_biomass)
+# Summed biomass = 38115.6
+```
+
+\vspace{10pt}
+
+```{r Consumers: 2010s Group 2 Biomass, echo = TRUE}
+## 2010s consumers group 2 taxa
+group.2.consumer.biomass.2010s <- consumer.biomass.2010s %>%
+	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s consumers group 2 total biomass
+group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.2010s$summed_biomass)
+# Summed biomass = 59127.29
+```
+
+\vspace{10pt}
+
+```{r Consumers: 2010s Group 3 Biomass, echo = TRUE}
+## 2010s consumers group 3 taxa
+group.3.consumer.biomass.2010s <- consumer.biomass.2010s %>%
+	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s consumers group 3 total biomass
+group.3.consumer.biomass.2010s.total.biomass <- sum(group.3.consumer.biomass.2010s$summed_biomass)
+# Summed biomass = 691.2489
+```
+
+\vspace{10pt}
+
+```{r Consumer Biomass Change, echo = TRUE, eval = FALSE}
+## 1980s Consumers (% of total biomass within sampling period)
+(group.1.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+# Group 1 = 38.54%
+(group.2.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+# Group 2 = 57.08%
+(group.3.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+# Group 3 =  4.38%
+
+## 2010s Consumers
+(group.1.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+# Group 1 = 38.92%
+(group.2.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+# Group 2 = 60.37%
+(group.3.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+# Group 3 =  0.71%
+```
+
+
+
+\newpage
+## Predators 
+
+Predator taxa within each size grouping:
+
++ Group 1: Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea, Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia, Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera
++ Group 2: Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna
++ Group 3: Helopicus, Neurocordulia
+
+```{r Biomass Change: Predator Data Management, echo = TRUE}
+## Predator data management
+# 1980s
+predator.biomass.1980s <- biomass.data %>%
+	filter(Period == "1980") %>%
+	select(Acroneuria:Plecoptera) %>%
+	mutate(summed_biomass = rowSums(.))
+
+# Sum all biomass for the 1980s predators
+predator.biomass.1980s.total.biomass <- sum(predator.biomass.1980s$summed_biomass)
+# Summed biomass = 35683.48
+
+# 2010s
+predator.biomass.2010s <- biomass.data %>%
+	filter(Period == "2010") %>%
+	select(Acroneuria:Plecoptera) %>%
+	mutate(summed_biomass = rowSums(.))
+
+# Sum all biomass for the 2010s predators
+predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$summed_biomass)
+# Summed biomass = 41286.46
+```
+
+\newpage
+
+```{r Predators: 1980s Group 1 Biomass, echo = TRUE}
+## 1980s predators group 1 taxa
+group.1.predator.biomass.1980s <- predator.biomass.1980s %>%
+	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s predators group 1 total biomass
+group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.1980s$summed_biomass)
+# Summed biomass = 13214.15
+```
+
+\vspace{10pt}
+
+```{r Predators: 1980s Group 2 Biomass, echo = TRUE}
+## 1980s predators group 2 taxa
+group.2.predator.biomass.1980s <- predator.biomass.1980s %>%
+	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s predators group 2 total biomass
+group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.1980s$summed_biomass)
+# Summed biomass = 17395.72
+```
+
+\vspace{10pt}
+
+```{r Predators: 1980s Group 3 Biomass, echo = TRUE}
+## 1980s predators group 3 taxa
+group.3.predator.biomass.1980s <- predator.biomass.1980s %>%
+	select(Helopicus, Neurocordulia) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 1980s predators group 3 total biomass
+group.3.predator.biomass.1980s.total.biomass <- sum(group.3.predator.biomass.1980s$summed_biomass)
+# Summed biomass = 5073.609
+```
+
+\newpage
+
+```{r Predators: 2010s Group 1 Biomass, echo = TRUE}
+## 2010s predators group 1 taxa
+group.1.predator.biomass.2010s <- predator.biomass.2010s %>%
+	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s predators group 1 total biomass
+group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.2010s$summed_biomass)
+# Summed biomass = 15968.22
+```
+
+\vspace{10pt}
+
+```{r Predators: 2010s Group 2 Biomass, echo = TRUE}
+## 2010s predators group 2 taxa
+group.2.predator.biomass.2010s <- predator.biomass.2010s %>%
+	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s predators group 2 total biomass
+group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.2010s$summed_biomass)
+# Summed biomass = 18922.44
+```
+
+\vspace{10pt}
+
+```{r Predators: 2010s Group 3 Biomass, echo = TRUE}
+## 2010s predators group 3 taxa
+group.3.predator.biomass.2010s <- predator.biomass.2010s %>%
+	select(Helopicus, Neurocordulia) %>%
+	mutate(summed_biomass = rowSums(.))
+
+## 2010s predators group 3 total biomass
+group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.2010s$summed_biomass)
+# Summed biomass = 6395.791
+```
+
+\vspace{10pt}
+
+```{r Predator Biomass Change, echo = TRUE, eval = FALSE}
+## 1980s Predators (% of total biomass within sampling period)
+(group.1.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+# Group 1 = 37.03%
+(group.2.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+# Group 2 = 48.75%
+(group.3.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+# Group 3 = 14.22%
+
+## 2010s Predators
+(group.1.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+# Group 1 = 38.68%
+(group.2.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+# Group 2 = 45.83%
+(group.3.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+# Group 3 = 15.49%
+```
+
 
 
 \newpage
@@ -870,7 +1160,7 @@ Consumer taxa within each size grouping:
 + Group 2: Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa
 + Group 3: Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche
 
-```{r Percent Biomass Change: Consumer Data Management, echo = TRUE}
+```{r Percent Density Change: Consumer Data Management, echo = TRUE}
 ## Consumer data management
 # 1980s
 consumer.density.1980s <- density.data %>%
@@ -878,8 +1168,9 @@ consumer.density.1980s <- density.data %>%
 	select(Amphinemura:Tricorythodes) %>%
 	mutate(summed_density = rowSums(.))
 
-# Sum all biomass for the 1980s consumers
+# Sum all density for the 1980s consumers
 consumer.density.1980s.total.density <- sum(consumer.density.1980s$summed_density)
+# Summed density = 2580454
 
 # 2010s
 consumer.density.2010s <- density.data %>%
@@ -887,8 +1178,9 @@ consumer.density.2010s <- density.data %>%
 	select(Amphinemura:Tricorythodes) %>%
 	mutate(summed_density = rowSums(.))
 
-# Sum all biomass for the 2010s consumers
+# Sum all density for the 2010s consumers
 consumer.density.2010s.total.density <- sum(consumer.density.2010s$summed_density)
+# Summed density = 2110836
 ```
 
 \newpage
@@ -907,6 +1199,7 @@ group.1.consumer.density.1980s <- consumer.density.1980s %>%
 
 ## 1980s consumers group 1 total density
 group.1.consumer.density.1980s.total.density <- sum(group.1.consumer.density.1980s$summed_density)
+# Summed density = 2302319
 ```
 
 \vspace{10pt}
@@ -919,6 +1212,7 @@ group.2.consumer.density.1980s <- consumer.density.1980s %>%
 
 ## 1980s consumers group 2 total density
 group.2.consumer.density.1980s.total.density <- sum(group.2.consumer.density.1980s$summed_density)
+# Summed density = 277220.8
 ```
 
 \vspace{10pt}
@@ -931,6 +1225,7 @@ group.3.consumer.density.1980s <- consumer.density.1980s %>%
 
 ## 1980s consumers group 3 total density
 group.3.consumer.density.1980s.total.density <- sum(group.3.consumer.density.1980s$summed_density)
+# Summed density = 913.8923
 ```
 
 \newpage
@@ -949,6 +1244,7 @@ group.1.consumer.density.2010s <- consumer.density.2010s %>%
 
 ## 2010s consumers group 1 total density
 group.1.consumer.density.2010s.total.density <- sum(group.1.consumer.density.2010s$summed_density)
+# Summed density = 1999623
 ```
 
 \vspace{10pt}
@@ -961,6 +1257,7 @@ group.2.consumer.density.2010s <- consumer.density.2010s %>%
 
 ## 2010s consumers group 2 total density
 group.2.consumer.density.2010s.total.density <- sum(group.2.consumer.density.2010s$summed_density)
+# Summed density = 111083.3
 ```
 
 \vspace{10pt}
@@ -973,16 +1270,17 @@ group.3.consumer.density.2010s <- consumer.density.2010s %>%
 
 ## 2010s consumers group 3 total density
 group.3.consumer.density.2010s.total.density <- sum(group.3.consumer.density.2010s$summed_density)
+# Summed density = 130.0784
 ```
 
 \vspace{10pt}
 
-```{r Consumer Biomass Change, echo = TRUE, eval = FALSE}
-## 1980s Consumers
+```{r Consumer Density Change, echo = TRUE, eval = FALSE}
+## 1980s Consumers (% of total density within sampling period)
 (group.1.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
 # Group 1 = 89.22%
 (group.2.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
-# Group 2 = 10.74$
+# Group 2 = 10.74%
 (group.3.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
 # Group 3 = 0.04%
 
@@ -1006,7 +1304,7 @@ Predator taxa within each size grouping:
 + Group 2: Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna
 + Group 3: Helopicus, Neurocordulia
 
-```{r Percent Biomass Change: Predator Data Management, echo = TRUE}
+```{r Percent Density Change: Predator Data Management, echo = TRUE}
 ## Predator data management
 # 1980s
 predator.density.1980s <- density.data %>%
@@ -1016,6 +1314,7 @@ predator.density.1980s <- density.data %>%
 
 # Sum all biomass for the 1980s predators
 predator.density.1980s.total.density <- sum(predator.density.1980s$summed_density)
+# Summed density = 47433.32
 
 # 2010s
 predator.density.2010s <- density.data %>%
@@ -1025,6 +1324,7 @@ predator.density.2010s <- density.data %>%
 
 # Sum all biomass for the 2010s predators
 predator.density.2010s.total.density <- sum(predator.density.2010s$summed_density)
+# Summed density = 88336.69
 ```
 
 \newpage
@@ -1039,6 +1339,7 @@ group.1.predator.density.1980s <- predator.density.1980s %>%
 
 ## 1980s predators group 1 total density
 group.1.predator.density.1980s.total.density <- sum(group.1.predator.density.1980s$summed_density)
+# Summed density = 46049.37
 ```
 
 \vspace{10pt}
@@ -1051,6 +1352,7 @@ group.2.predator.density.1980s <- predator.density.1980s %>%
 
 ## 1980s predators group 2 total density
 group.2.predator.density.1980s.total.density <- sum(group.2.predator.density.1980s$summed_density)
+# Summed density = 47433.32
 ```
 
 \vspace{10pt}
@@ -1063,6 +1365,7 @@ group.3.predator.density.1980s <- predator.density.1980s %>%
 
 ## 1980s predators group 3 total density
 group.3.predator.density.1980s.total.density <- sum(group.3.predator.density.1980s$summed_density)
+# Summed density = 158.1566
 ```
 
 \newpage
@@ -1077,6 +1380,7 @@ group.1.predator.density.2010s <- predator.density.2010s %>%
 
 ## 2010s predators group 1 total density
 group.1.predator.density.2010s.total.density <- sum(group.1.predator.density.2010s$summed_density)
+# Summed density = 85669.75
 ```
 
 \vspace{10pt}
@@ -1089,6 +1393,7 @@ group.2.predator.density.2010s <- predator.density.2010s %>%
 
 ## 2010s predators group 2 total density
 group.2.predator.density.2010s.total.density <- sum(group.2.predator.density.2010s$summed_density)
+# Summed density = 2425.899
 ```
 
 \vspace{10pt}
@@ -1101,111 +1406,112 @@ group.3.predator.density.2010s <- predator.density.2010s %>%
 
 ## 2010s predators group 3 total density
 group.3.predator.density.2010s.total.density <- sum(group.3.predator.density.2010s$summed_density)
+# Summed density = 241.0455
 ```
 
 \vspace{10pt}
 
-```{r Predator Biomass Change, echo = TRUE, eval = FALSE}
-## 1980s Predators
+```{r Predator Density Change, echo = TRUE, eval = FALSE}
+## 1980s Predators (% of total density within sampling period)
 (group.1.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
 # Group 1 = 97.08%
 (group.2.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
-# Group 2 = 2.58%
+# Group 2 =  2.58%
 (group.3.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
-# Group 3 = 0.33%
+# Group 3 =  0.33%
 
 ## 2010s Predators
 (group.1.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
 # Group 1 = 96.98%
 (group.2.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
-# Group 2 = 2.75%
+# Group 2 =  2.75%
 (group.3.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
-# Group 3 = 0.28%
+# Group 3 =  0.27%
 ```
 
 
 
 \newpage
-# Biomass Chi-Squared Tests
+# Biomass & Density Chi-Squared Tests
 
-We performed a chi-squared test to determine whether there were differences in density by size groupings between sampling period for consumers and predators. Chi-squared tests were performed using `chisq.test()`, with observed and expected frequencies examined to confirm test assumptions were met. Additionally, we assessed residuals to determine over- and under-represented size groupings by sampling period. Residuals were calculated as:
+We performed a chi-squared test to determine whether there were differences in biomass by size groupings between sampling period for consumers and predators. Chi-squared tests were performed using `chisq.test()`, with observed and expected frequencies examined to confirm test assumptions were met. Additionally, we assessed residuals to determine over- and under-represented size groupings by sampling period. Residuals were calculated as:
 
 $$\frac{Observed - Expected}{\sqrt{Expected}}$$
 
 \vspace{10pt}
 
-## Consumers
+## Consumer Biomass
 
-```{r Consumer Chi-Squared Tests: Data Management, echo = TRUE}
+```{r Consumer Biomass Chi-Squared Tests: Data Management, echo = TRUE}
 ## Set consumer chi-square dataframe
-consumer.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
-colnames(consumer.chi.square.data) <- c("1980s", "2010s")
-rownames(consumer.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
+consumer.biomass.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
+colnames(consumer.biomass.chi.square.data) <- c("1980s", "2010s")
+rownames(consumer.biomass.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 
 ## Add biomass values by groups for the 1980s and 2010s
 # 1980s
-consumer.chi.square.data$`1980s` <- c(
-	group.1.consumer.density.1980s.total.density,
-	group.2.consumer.density.1980s.total.density,
-	group.3.consumer.density.1980s.total.density
+consumer.biomass.chi.square.data$`1980s` <- c(
+	group.1.consumer.biomass.1980s.total.biomass,
+	group.2.consumer.biomass.1980s.total.biomass,
+	group.3.consumer.biomass.1980s.total.biomass
 	)
 
 # 2010s
-consumer.chi.square.data$`2010s` <- c(
-	group.1.consumer.density.2010s.total.density,
-	group.2.consumer.density.2010s.total.density,
-	group.3.consumer.density.2010s.total.density
+consumer.biomass.chi.square.data$`2010s` <- c(
+	group.1.consumer.biomass.2010s.total.biomass,
+	group.2.consumer.biomass.2010s.total.biomass,
+	group.3.consumer.biomass.2010s.total.biomass
 	)
 ```
 
 \vspace{10pt}
 
-```{r Consumer Chi-Squared Test, echo = TRUE}
-consumer.chi.square.test <- chisq.test(consumer.chi.square.data)
-# chi-squared = 46424, df = 2, P < 0.00001
+```{r Consumer Biomass Chi-Squared Test, echo = TRUE}
+consumer.biomass.chi.square.test <- chisq.test(consumer.biomass.chi.square.data)
+# chi-squared = 2933.7, df = 2, P < 0.00001
 ```
 
 \vspace{10pt}
 
-```{r Consumer Chi-Squared Test Table: Observed Values, echo = FALSE}
+```{r Consumer Biomass Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	consumer.chi.square.test$observed,
+	consumer.biomass.chi.square.test$observed,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Observed densities by size groupings for the consumer chi-squared test."
+	caption = "Observed biomass by size groupings for the consumer chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
-```{r Consumer Chi-Squared Test Table: Expected Values, echo = FALSE}
+```{r Consumer Biomass Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	consumer.chi.square.test$expected,
+	consumer.biomass.chi.square.test$expected,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Expected densities by size groupings for the consumer chi-squared test."
+	caption = "Expected biomass by size groupings for the consumer chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
-```{r Consumer Chi-Squared Test Table: Residuals, echo = FALSE}
+```{r Consumer Biomass Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	consumer.chi.square.test$residuals,
+	consumer.biomass.chi.square.test$residuals,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Residual densities by size groupings for the consumer chi-squared test."
+	caption = "Residual biomass by size groupings for the consumer chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
-```{r Consumer Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the consumer chi-squared test."}
+```{r Consumer Biomass Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the consumer chi-squared test."}
 corrplot::corrplot(
-	consumer.chi.square.test$residuals,
+	consumer.biomass.chi.square.test$residuals,
 	method = "ellipse",
 	tl.col = "gray0", 
 	addCoef.col = TRUE, 
@@ -1218,24 +1524,190 @@ corrplot::corrplot(
 
 
 \newpage
-## Predators
+## Consumer Density
 
-```{r Predator Chi-Squared Tests: Data Management, echo = TRUE}
+```{r Consumer Density Chi-Squared Tests: Data Management, echo = TRUE}
+## Set consumer chi-square dataframe
+consumer.density.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
+colnames(consumer.density.chi.square.data) <- c("1980s", "2010s")
+rownames(consumer.density.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
+
+## Add density values by groups for the 1980s and 2010s
+# 1980s
+consumer.density.chi.square.data$`1980s` <- c(
+	group.1.consumer.density.1980s.total.density,
+	group.2.consumer.density.1980s.total.density,
+	group.3.consumer.density.1980s.total.density
+	)
+
+# 2010s
+consumer.density.chi.square.data$`2010s` <- c(
+	group.1.consumer.density.2010s.total.density,
+	group.2.consumer.density.2010s.total.density,
+	group.3.consumer.density.2010s.total.density
+	)
+```
+
+\vspace{10pt}
+
+```{r Consumer Density Chi-Squared Test, echo = TRUE}
+consumer.density.chi.square.test <- chisq.test(consumer.density.chi.square.data)
+# chi-squared = 46424, df = 2, P < 0.00001
+```
+
+\vspace{10pt}
+
+```{r Consumer Density Chi-Squared Test Table: Observed Values, echo = FALSE}
+kable(
+	consumer.density.chi.square.test$observed,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Observed density by size groupings for the consumer chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Consumer Density Chi-Squared Test Table: Expected Values, echo = FALSE}
+kable(
+	consumer.density.chi.square.test$expected,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Expected density by size groupings for the consumer chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Consumer Density Chi-Squared Test Table: Residuals, echo = FALSE}
+kable(
+	consumer.density.chi.square.test$residuals,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Residual density by size groupings for the consumer chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Consumer Density Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the consumer chi-squared test."}
+corrplot::corrplot(
+	consumer.density.chi.square.test$residuals,
+	method = "ellipse",
+	tl.col = "gray0", 
+	addCoef.col = TRUE, 
+	tl.cex = 1.0, 
+	cl.cex = 1.0, 
+	number.cex = 1.5,
+	is.corr = FALSE
+	)
+```
+
+
+\newpage
+## Predator Biomass
+
+```{r Predator Biomass Chi-Squared Tests: Data Management, echo = TRUE}
 ## Set predator chi-square dataframe
-predator.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
-colnames(predator.chi.square.data) <- c("1980s", "2010s")
-rownames(predator.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
+predator.biomass.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
+colnames(predator.biomass.chi.square.data) <- c("1980s", "2010s")
+rownames(predator.biomass.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 
 ## Add biomass values by groups for the 1980s and 2010s
 # 1980s
-predator.chi.square.data$`1980s` <- c(
+predator.biomass.chi.square.data$`1980s` <- c(
+	group.1.predator.biomass.1980s.total.biomass,
+	group.2.predator.biomass.1980s.total.biomass,
+	group.3.predator.biomass.1980s.total.biomass
+	)
+
+# 2010s
+predator.biomass.chi.square.data$`2010s` <- c(
+	group.1.predator.biomass.2010s.total.biomass,
+	group.2.predator.biomass.2010s.total.biomass,
+	group.3.predator.biomass.2010s.total.biomass
+	)
+```
+
+\vspace{10pt}
+
+```{r Predator Biomass Chi-Squared Test, echo = TRUE}
+predator.biomass.chi.square.test <- chisq.test(predator.biomass.chi.square.data)
+# chi-squared = 69.014, df = 2, P < 0.00001
+```
+
+\vspace{10pt}
+
+```{r Predator Biomass Chi-Squared Test Table: Observed Values, echo = FALSE}
+kable(
+	predator.biomass.chi.square.test$observed,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Observed biomass by size groupings for the predator chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Predator Biomass Chi-Squared Test Table: Expected Values, echo = FALSE}
+kable(
+	predator.biomass.chi.square.test$expected,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Expected biomass by size groupings for the predator chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Predator Biomass Chi-Squared Test Table: Residuals, echo = FALSE}
+kable(
+	predator.biomass.chi.square.test$residuals,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Residual biomass by size groupings for the predator chi-squared test."
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+```{r Predator Biomass Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the predator chi-squared test."}
+corrplot::corrplot(
+	predator.biomass.chi.square.test$residuals,
+	method = "ellipse",
+	tl.col = "gray0", 
+	addCoef.col = TRUE, 
+	tl.cex = 1.0, 
+	cl.cex = 1.0, 
+	number.cex = 1.5,
+	is.corr = FALSE
+	)
+```
+
+
+\newpage
+## Predator Density
+
+```{r Predator Density Chi-Squared Tests: Data Management, echo = TRUE}
+## Set predator chi-square dataframe
+predator.density.chi.square.data <- as.data.frame(data.frame(matrix(0, nrow = 3, ncol = 2)))
+colnames(predator.density.chi.square.data) <- c("1980s", "2010s")
+rownames(predator.density.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
+
+## Add density values by groups for the 1980s and 2010s
+# 1980s
+predator.density.chi.square.data$`1980s` <- c(
 	group.1.predator.density.1980s.total.density,
 	group.2.predator.density.1980s.total.density,
 	group.3.predator.density.1980s.total.density
 	)
 
 # 2010s
-predator.chi.square.data$`2010s` <- c(
+predator.density.chi.square.data$`2010s` <- c(
 	group.1.predator.density.2010s.total.density,
 	group.2.predator.density.2010s.total.density,
 	group.3.predator.density.2010s.total.density
@@ -1244,50 +1716,50 @@ predator.chi.square.data$`2010s` <- c(
 
 \vspace{10pt}
 
-```{r Predator Chi-Squared Test, echo = TRUE}
-predator.chi.square.test <- chisq.test(predator.chi.square.data)
+```{r Predator Density Chi-Squared Test, echo = TRUE}
+predator.density.chi.square.test <- chisq.test(predator.density.chi.square.data)
 # chi-squared = 6.8918, df = 2, P = 0.03188
 ```
 
 \vspace{10pt}
 
-```{r Predator Chi-Squared Test Table: Observed Values, echo = FALSE}
+```{r Predator Density Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	predator.chi.square.test$observed,
+	predator.density.chi.square.test$observed,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Observed densities by size groupings for the predator chi-squared test."
+	caption = "Observed density by size groupings for the predator chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
-```{r Predator Chi-Squared Test Table: Expected Values, echo = FALSE}
+```{r Predator Density Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	predator.chi.square.test$expected,
+	predator.density.chi.square.test$expected,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Expected densities by size groupings for the predator chi-squared test."
+	caption = "Expected density by size groupings for the predator chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
-```{r Predator Chi-Squared Test Table: Residuals, echo = FALSE}
+```{r Predator Density Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	predator.chi.square.test$residuals,
+	predator.density.chi.square.test$residuals,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Residual densities by size groupings for the predator chi-squared test."
+	caption = "Residual density by size groupings for the predator chi-squared test."
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-```{r Predator Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the predator chi-squared test."}
+```{r Predator Density Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the predator chi-squared test."}
 corrplot::corrplot(
-	predator.chi.square.test$residuals,
+	predator.density.chi.square.test$residuals,
 	method = "ellipse",
 	tl.col = "gray0", 
 	addCoef.col = TRUE, 
@@ -1642,7 +2114,7 @@ kable(
 
 \vspace{10pt}
 
-```{r Carbon & Discharge ANCOVA: Effect Sizes, echo = TRUE}
+```{r Carbon & Discharge ANCOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the discharge ANOVA
 carbon.discharge.ancova.eta.squared <- eta_squared(
 	Anova(carbon.discharge.ancova, type = "II"),
