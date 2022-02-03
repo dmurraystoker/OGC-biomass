@@ -103,7 +103,7 @@ flow.dates$UID <- environmental.data$UID
 
 \newpage
 
-```{r Water Data: Download, eval = FALSE}
+```{r Water Data: Download, echo = TRUE, eval = FALSE}
 ## Empty dataframe for discharge data
 discharge.data <- tibble(data.frame(matrix(0, nrow = 15, ncol = 49)))
 
@@ -124,7 +124,7 @@ for(x in 1:49){
 
 \vspace{10pt}
 
-```{r Water Data; Cleanup, eval = FALSE}
+```{r Water Data; Cleanup, echo = TRUE, eval = FALSE}
 ## Calculate two week mean & convert from ft3 to m3
 mean.discharge <- sapply(discharge.data, mean)
 metric.shift   <- (mean.discharge / 35.315)
@@ -211,9 +211,9 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
-```{r Discharge ANOVA: Effect Sizes, echo = TRUE}
+```{r Discharge ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the discharge ANOVA
 discharge.anova.eta.squared <- eta_squared(
 	Anova(discharge.anova, type = "II"),
@@ -228,7 +228,7 @@ kable(
 	discharge.anova.eta.squared,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	caption = "Table of the effect sizes in the discharge ANOVA.",
 	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -281,9 +281,9 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
-```{r Precipitation ANOVA: Effect Sizes, echo = TRUE}
+```{r Precipitation ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the precipitation ANOVA
 precipitation.anova.eta.squared <- eta_squared(
 	Anova(precipitation.anova, type = "II"),
@@ -298,7 +298,7 @@ kable(
 	precipitation.anova.eta.squared,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	caption = "Table of the effect sizes in the precipitation ANOVA.",
 	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -327,7 +327,7 @@ kable(
 	Anova(water.temperature.anova, type = "II"),
 	booktabs = TRUE,
 	digits = 3,
-	caption = "ANOVA results for water.temperature by period, season, and the interaction.",
+	caption = "ANOVA results for water temperature by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -351,9 +351,9 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
-```{r Water Temperature ANOVA: Effect Sizes, echo = TRUE}
+```{r Water Temperature ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the water temperature ANOVA
 water.temperature.anova.eta.squared <- eta_squared(
 	Anova(water.temperature.anova, type = "II"),
@@ -368,7 +368,7 @@ kable(
 	water.temperature.anova.eta.squared,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	caption = "Table of the effect sizes in the water temperature ANOVA.",
 	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -397,7 +397,7 @@ kable(
 	Anova(air.temperature.anova, type = "II"),
 	booktabs = TRUE,
 	digits = 3,
-	caption = "ANOVA results for air.temperature by period, season, and the interaction.",
+	caption = "ANOVA results for air temperature by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -421,9 +421,9 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
-```{r Air Temperature ANOVA: Effect Sizes, echo = TRUE}
+```{r Air Temperature ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the air temperature ANOVA
 air.temperature.anova.eta.squared <- eta_squared(
 	Anova(air.temperature.anova, type = "II"),
@@ -438,7 +438,7 @@ kable(
 	air.temperature.anova.eta.squared,
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Table of the effect sizes in the predator biomass ANOVA.",
+	caption = "Table of the effect sizes in the air temperature ANOVA.",
 	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
@@ -551,24 +551,6 @@ save.image("data_analysis/OGC-biomass-environmental_comparisons-workspace.RData"
 \newpage
 # R Session Information
 
-```{r R Environment, echo = FALSE}
-df_session_platform <- devtools::session_info()$platform %>% 
-  unlist(.) %>% 
-  as.data.frame(.) %>% 
-  rownames_to_column(.)
-
-colnames(df_session_platform) <- c("Setting", "Value")
-
-kable(
-  df_session_platform, 
-  booktabs = TRUE,
-  caption = "R session information for transparency and reproducing results."
-) %>% 
-  kable_styling(
-  	full_width = FALSE,
-  	latex_options = c("HOLD_position", "striped")
-  	) 
-```
 
 ```{r R Packages, echo = FALSE}
 df_session_packages <- devtools::session_info()$packages %>% 
@@ -582,7 +564,7 @@ colnames(df_session_packages) <- c("Package", "Loaded Version", "Date")
 kable(
   df_session_packages, 
   booktabs = TRUE,
-  caption = "Packages for data management and analysis."
+  caption = "Packages for data management and analyses."
   ) %>%
 	kable_styling(
 		full_width = FALSE,
