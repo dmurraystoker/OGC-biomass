@@ -796,26 +796,6 @@ predator.size.data$size.group <- as.numeric(predator.size.groups)
 \newpage
 # Biomass Change
 
-We quantified the biomass change in size groupings between sampling periods by illustrating numerical differences. We also compared differences in biomass of three dominant caddisfly taxa.
-
-\vspace{10pt}
-
-```{r Percent Biomass Change, echo = TRUE}
-## Calculate percent change in overall biomass
-full.summed.biomass.vector <- biomass.data$Summed_Biomass
-summed.biomass.1980s       <- full.summed.biomass.vector[1:25]
-summed.biomass.2010s       <- full.summed.biomass.vector[26:49]
-
-## Divide mean 2010s biomass by mean 1980s biomass
-percent.biomass.change <- (mean(summed.biomass.2010s)/mean(summed.biomass.1980s))*100
-# 2010s biomass = 60.28% of 1980s biomass
-```
-
-
-
-\newpage
-# Biomass Change
-
 We numerically evaluated changes in biomass by size groupings for consumers and predators.
 
 \vspace{10pt}
@@ -849,6 +829,12 @@ consumer.biomass.2010s <- biomass.data %>%
 # Sum all biomass for the 2010s consumers
 consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$summed_biomass)
 # Summed biomass = 97934.14
+
+## Divide mean 2010s biomass by mean 1980s biomass
+percent.consumer.biomass.change <- (
+	mean(consumer.biomass.2010s.total.biomass)/mean(consumer.biomass.1980s.total.biomass)
+	)*100
+# 2010s biomass = 47.80% of 1980s biomass
 ```
 
 \newpage
@@ -993,6 +979,12 @@ predator.biomass.2010s <- biomass.data %>%
 # Sum all biomass for the 2010s predators
 predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$summed_biomass)
 # Summed biomass = 41286.46
+
+## Divide mean 2010s biomass by mean 1980s biomass
+percent.predator.biomass.change <- (
+	mean(predator.biomass.2010s.total.biomass)/mean(predator.biomass.1980s.total.biomass)
+	)*100
+# 2010s biomass = 115.70% of 1980s biomass
 ```
 
 \newpage
@@ -2149,25 +2141,6 @@ save.image("data_analysis/OGC-biomass-primary_analyses-workspace.RData")
 \newpage
 # R Session Information
 
-```{r R Environment, echo = FALSE}
-df_session_platform <- devtools::session_info()$platform %>% 
-  unlist(.) %>% 
-  as.data.frame(.) %>% 
-  rownames_to_column(.)
-
-colnames(df_session_platform) <- c("Setting", "Value")
-
-kable(
-  df_session_platform, 
-  booktabs = TRUE,
-  caption = "R session information for transparency and reproducing results."
-) %>% 
-  kable_styling(
-  	full_width = FALSE,
-  	latex_options = c("HOLD_position", "striped")
-  	) 
-```
-
 ```{r R Packages, echo = FALSE}
 df_session_packages <- devtools::session_info()$packages %>% 
   as.data.frame(.) %>% 
@@ -2180,7 +2153,7 @@ colnames(df_session_packages) <- c("Package", "Loaded Version", "Date")
 kable(
   df_session_packages, 
   booktabs = TRUE,
-  caption = "Packages for data management and analysis."
+  caption = "Packages for data management and analyses."
   ) %>%
 	kable_styling(
 		full_width = FALSE,
