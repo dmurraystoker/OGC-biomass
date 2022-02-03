@@ -829,12 +829,6 @@ consumer.biomass.2010s <- biomass.data %>%
 # Sum all biomass for the 2010s consumers
 consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$summed_biomass)
 # Summed biomass = 97934.14
-
-## Divide mean 2010s biomass by mean 1980s biomass
-percent.consumer.biomass.change <- (
-	mean(consumer.biomass.2010s.total.biomass)/mean(consumer.biomass.1980s.total.biomass)
-	)*100
-# 2010s biomass = 47.80% of 1980s biomass
 ```
 
 \newpage
@@ -979,12 +973,6 @@ predator.biomass.2010s <- biomass.data %>%
 # Sum all biomass for the 2010s predators
 predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$summed_biomass)
 # Summed biomass = 41286.46
-
-## Divide mean 2010s biomass by mean 1980s biomass
-percent.predator.biomass.change <- (
-	mean(predator.biomass.2010s.total.biomass)/mean(predator.biomass.1980s.total.biomass)
-	)*100
-# 2010s biomass = 115.70% of 1980s biomass
 ```
 
 \newpage
@@ -1087,6 +1075,12 @@ group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.201
 # Group 2 = 45.83%
 (group.3.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
 # Group 3 = 15.49%
+
+## Divide mean 2010s biomass by mean 1980s biomass
+percent.predator.biomass.change <- (
+	mean(predator.biomass.2010s.total.biomass)/mean(predator.biomass.1980s.total.biomass)
+	)*100
+# 2010s biomass = 115.70% of 1980s biomass
 ```
 
 
@@ -1283,6 +1277,12 @@ group.3.consumer.density.2010s.total.density <- sum(group.3.consumer.density.201
 # Group 2 = 5.26%
 (group.3.consumer.density.2010s.total.density/consumer.density.2010s.total.density)*100
 # Group 3 = 0.01%
+
+## Divide mean 2010s density by mean 1980s density
+percent.consumer.density.change <- (
+	mean(consumer.density.2010s.total.density)/mean(consumer.density.1980s.total.density)
+	)*100
+# 2010s density = 81.80% of 1980s density
 ```
 
 
@@ -1419,6 +1419,12 @@ group.3.predator.density.2010s.total.density <- sum(group.3.predator.density.201
 # Group 2 =  2.75%
 (group.3.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
 # Group 3 =  0.27%
+
+## Divide mean 2010s density by mean 1980s density
+percent.predator.density.change <- (
+	mean(predator.density.2010s.total.density)/mean(predator.density.1980s.total.density)
+	)*100
+# 2010s density = 186.23% of 1980s density
 ```
 
 
