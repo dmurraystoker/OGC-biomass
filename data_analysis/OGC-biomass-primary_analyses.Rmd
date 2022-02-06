@@ -469,7 +469,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Consumer Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
@@ -557,7 +557,7 @@ kable(
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
-\newpage
+\vspace{10pt}
 
 ```{r Consumer Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
