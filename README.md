@@ -3,7 +3,7 @@
 Data, metadata, and R code for “Taxon-specific biomass declines in a blackwater river: the importance of a community approach to understanding invertebrate loss.”
 ================
 David Murray-Stoker
-5 March 2022
+7 March 2022
 
 Data, metadata, and all analytical code for the manuscript:
 
@@ -11,7 +11,12 @@ Murray-Stoker, K. M. et al. Taxon-specific biomass declines in a blackwater rive
 
 ## Abstract
 
-**Put the abstract here.**
+1.	Around the world, researchers are reporting declines in insect fauna. Though uncommonly evaluated in such studies, the community context of population trends can facilitate interpretation of the causes and consequences of such losses. 
+2.	We used a multivariate approach to compare the structure of freshwater invertebrate assemblages separated by more than 30 years in the Ogeechee River, in the southeastern US, and found biomass declines. 
+3.	Overall, the biomass in the 2010s was approximately 60% of the total in the 1980s. Community analyses indicated that this decline was driven by reduced densities of large-bodied, filter-feeding insects, particularly Hydropsychidae caddisflies (Trichoptera). Conversely, predators and small-bodied primary consumers increased in density, though their contributions to overall biomass were minimal and their increased density was not sufficient to compensate for biomass declines. 
+4.	The overall decline of freshwater invertebrate biomass may be driven by climate-related changes in flood dynamics: seasonal flooding that facilitates delivery of floodplain carbon to filter-feeding consumers has decreased over several decades. Water temperature had also increased and has likely had effects on the invertebrate assemblages. 
+5.	Whole-community evaluations such as this one, in contrast to single-taxon and abundance-based studies, provide critical information to elucidate the dynamics of freshwater impairment and insect loss in the Anthropocene.
+
 
 ## Contents
 
