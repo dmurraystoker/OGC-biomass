@@ -59,7 +59,7 @@ environmental.data$Period         <- as_factor(environmental.data$Period)
 \newpage
 # USGS Discharge Data
 
-We obtained average daily discharge (m^3^ s^-1^) and water chemistry metrics from the United States Geological Survey (USGS, gage 02202500) to calculate the average discharge over a two-week period preceding each sampling date. Discharge data were downloaded using the `waterData` package. Water and air temperature data were collected from the USGS water quality dataset, and precipitation data were gathered from the National Weather Service Forecast Office in Louisville, GA.
+We obtained average daily discharge (m^3^ s^-1^) and water chemistry metrics from the United States Geological Survey (USGS, gage 02202500) to calculate the average discharge over a two-week period preceding each sampling date. Discharge data were downloaded using the `waterData` package. Water data were collected from the USGS water quality dataset, and air temperature and precipitation data were gathered from the National Weather Service Forecast Office in Louisville, GA.
 
 \vspace{10pt}
 
@@ -451,7 +451,7 @@ kable(
 
 ## Data Management
 
-We obtained historical USGS discharge data from December 1969 to November 2018 to determine average daily discharge for the winter-spring season of each year. Water and air temperature data collected from 1974 until 2018 were also obtained from the USGS water quality dataset. Precipitation data from 1970 until 2018 were obtained from the National Weather Service Forecast Office in Louisville, GA. We then filtered the long-term environmental data to only include the winter-spring season group (winter months = December, January, and February; spring months = March, April, and May), which are important for the flood pulse into the Ogeechee River. Mean values were then aggregated by year to generate a mean winter-spring value per year for use in time series analyses. Trends in the the time series were analyzed with Mann-Kendall tests using `MannKendall()`.
+We obtained historical USGS discharge data from December 1969 to November 2018 to determine average daily discharge for the winter-spring season of each year. Water data collected from 1974 until 2018 were also obtained from the USGS water quality dataset. Precipitation and air temperature data from 1970 until 2018 were obtained from the National Weather Service Forecast Office in Louisville, GA. We then filtered the long-term environmental data to only include the winter-spring season group (winter months = December, January, and February; spring months = March, April, and May), which are important for the flood pulse into the Ogeechee River. Mean values were then aggregated by year to generate a mean winter-spring value per year for use in time series analyses. Trends in the the time series were analyzed with Mann-Kendall tests using `MannKendall()`.
 
 \vspace{10pt}
 
