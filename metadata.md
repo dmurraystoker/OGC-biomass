@@ -10,13 +10,11 @@ Murray-Stoker, K. M. et al. Taxon-specific biomass declines in a blackwater rive
 
 # Metadata
 
-\vspace{24pt}
 
 ## Raw Data
 
 Raw data were imported into R for initial data processing and management (files = OGC\_biomass_data\-1982.csv, OGC\_biomass_data\-1983.csv, OGC\_biomass_data\-2010s.csv). Data were cast into wide biomass-by-taxa (files = OGC\_1982\_biomass\_by\_taxa.csv, OGC\_1983\_biomass\_by\_taxa.csv, OGC\_2010s\_biomass\_by\_taxa.csv) and density-by-taxa (files = OGC\_1982\_density\_by\_taxa.csv, OGC\_1983\_density\_by\_taxa.csv, OGC\_2010s\_density\_by\_taxa.csv) matrices. Final data management was conducted using Excel (see Processed Data below).
 
-\vspace{24pt}
 
 ### file = OGC\_biomass_data\-1982.csv
 
@@ -36,7 +34,7 @@ Raw data were imported into R for initial data processing and management (files 
 | Section 							| Body section from which biomass was estimated following Benke et al. 1999 (JNABS |
 | Biomass_Estimate      | Density $\times$ Individual_Biomass 																	|
 
-\vspace{24pt}
+
 
 ### file = OGC\_biomass\_data\-1983.csv
 
@@ -56,7 +54,7 @@ Raw data were imported into R for initial data processing and management (files 
 | Section 							| Body section from which biomass was estimated following Benke et al. 1999 (JNABS |
 | Biomass_Estimate      | Density $\times$ Individual_Biomass 																	|
 
-\vspace{24pt}
+
 
 ### file = OGC\_biomass\_data\-2010s.csv
 
@@ -76,7 +74,7 @@ Raw data were imported into R for initial data processing and management (files 
 | Section 					 | Body section from which biomass was estimated following Benke et al. 1999 (JNABS |
 | Biomass_Estimate   | Density $\times$ Individual_Biomass 																	    |
 
-\vspace{24pt}
+
 
 ### file = OGC\_1982\_biomass\_by\_taxa.csv
 
@@ -85,7 +83,7 @@ Raw data were imported into R for initial data processing and management (files 
 | UID         | Unique identifier for the sample, in the data format YYYYMMDD        |
 | Acroneuria:Shipsa | Biomass estimate for each taxon in the sample; taxa were primarily identified to genus |
 
-\vspace{24pt}
+
 
 ### file = OGC\_1983\_biomass\_by\_taxa.csv
 
@@ -94,7 +92,7 @@ Raw data were imported into R for initial data processing and management (files 
 | UID         | Unique identifier for the sample, in the data format YYYYMMDD        |
 | Acroneuria:Tipulidae | Biomass estimate for each taxon in the sample; taxa were primarily identified to genus |
 
-\vspace{24pt}
+
 
 ### file = OGC\_2010s\_biomass\_by\_taxa.csv
 
@@ -103,7 +101,7 @@ Raw data were imported into R for initial data processing and management (files 
 | UID         | Unique identifier for the sample, in the data format YYYYMMDD        |
 | Acroneuria:Tipulidae | Biomass estimate for each taxon in the sample; taxa were primarily identified to genus |
 
-\vspace{24pt}
+
 
 ### file = OGC\_1982\_density\_by\_taxa.csv
 
@@ -112,7 +110,7 @@ Raw data were imported into R for initial data processing and management (files 
 | UID         | Unique identifier for the sample, in the data format YYYYMMDD        |
 | Acroneuria:Shipsa | Density estimate for each taxon in the sample; taxa were primarily identified to genus |
 
-\vspace{24pt}
+
 
 ### file = OGC\_1983\_density\_by\_taxa.csv
 
@@ -121,7 +119,7 @@ Raw data were imported into R for initial data processing and management (files 
 | UID         | Unique identifier for the sample, in the data format YYYYMMDD        |
 | Acroneuria:Tipulidae | Density estimate for each taxon in the sample; taxa were primarily identified to genus |
 
-\vspace{24pt}
+
 
 ### file = OGC\_2010s\_density\_by\_taxa.csv
 
@@ -138,7 +136,7 @@ Raw data were initially processed in R using `reshape2` and the `tidyverse`, wit
 
 Note: Environmental comparisons between sampling periods and season (i.e. ANOVAs) were conducted using environmental variables in the OGC\_final\_biomass\_data.csv file, while longer-term comparisons, including time before and between sampling periods, were conducted using environmental variables in the OGC\_long\_term\_environmental\_data.csv file.
 
-\vspace{24pt}
+
 
 ### file = OGC\_final\_biomass\_data.csv
 
@@ -162,7 +160,7 @@ Note: Environmental comparisons between sampling periods and season (i.e. ANOVAs
 | Amphinemura:Plecoptera | Biomass estimates for each taxon in the sample; taxa were primarily identified to genus (numeric)     |
 | Summed_Biomass | Summed biomass estimates across all taxa present in the sample (numeric)                                      |
 
-\vspace{24pt}
+
 
 ### file = OGC\_final\_density\_data.csv
 
@@ -186,7 +184,7 @@ Note: Environmental comparisons between sampling periods and season (i.e. ANOVAs
 | Amphinemura:Plecoptera | Density estimates for each taxon in the sample; taxa were primarily identified to genus (numeric)     |
 | Summed_Density | Summed density estimates across all taxa present in the sample (numeric)                                      |
 
-\vspace{24pt}
+
 
 ### file = OGC\_long\_term\_environmental\_data.csv
 
