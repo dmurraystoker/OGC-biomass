@@ -28,17 +28,17 @@ library(knitr)
 library(tidyverse)
 
 ## Load packages for data management and analysis
-library(agricolae)
 library(broom)
 library(car)
 library(easystats)
+library(emmeans)
 library(indicspecies)
 library(reshape2)
 library(waterData)
 library(vegan)
 
 ## Load the final workspace for reproducibility
-#load("data_analysis/OGC-biomass-primary_analyses-workspace.RData")
+load("data_analysis/OGC-biomass-primary_analyses-workspace.RData")
 ```
 
 
@@ -163,7 +163,7 @@ write_csv(OGC.density.2010s.final, file = "data/OGC_2010s_density_by_taxa.csv")
 \newpage
 # Load Processed Data
 
-```{r Load Data, echo = TRUE}
+```{r Load Data, echo = TRUE, eval = FALSE}
 ## Read in data
 biomass.data <- read_csv("data/OGC_final_biomass_data.csv", show_col_types = FALSE)
 density.data <- read_csv("data/OGC_final_density_data.csv", show_col_types = FALSE)
@@ -207,7 +207,7 @@ density.2010s <- invertebrate.density.matrix[26:49, ]
 \newpage
 # Biomass & Density ANOVAs
 
-Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups for influential factors in the ANOVA.
+Biomass and density were compared by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Pairwise contrasts between influential factors were performed using `emmeans()`, with effect sizes for contrasts calculated as Cohen's d.
 
 \vspace{10pt}
 
@@ -221,7 +221,7 @@ biomass.anova <- lm(
 
 \vspace{10pt}
 
-```{r Biomass ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the biomass ANOVA."}
+```{r Biomass ANOVA: Check Assumptions, eval = FALSE}
 check_model(biomass.anova)
 ```
 
@@ -235,24 +235,6 @@ kable(
 	caption = "ANOVA results for biomass by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Biomass ANOVA Tukey HSD: Period, echo = FALSE}
-## Tukey groups
-biomass.period.groups <- HSD.test(
-	biomass.anova, trt = "Period", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	biomass.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to periods differing in biomass.",
-	col.names = c("Biomass", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -274,9 +256,79 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Biomass ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+biomass.anova.emmeans.period <- emmeans(
+	biomass.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+biomass.anova.emmeans.season <- emmeans(
+	biomass.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+biomass.anova.emmeans.period.season <- emmeans(
+	biomass.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period): Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(biomass.anova.emmeans.period$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by period in the biomass ANOVA.",
+	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period): Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(biomass.anova.emmeans.period$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Contrasts by period in the biomass ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period): Biomass ANOVA, echo = FALSE}
+kable(
+	eff_size(biomass.anova.emmeans.period,
+					 sigma = sigma(biomass.anova),
+					 edf = df.residual(biomass.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the constrasts by period in the biomass ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -291,7 +343,7 @@ density.anova <- lm(
 
 \vspace{10pt}
 
-```{r Density ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the density ANOVA."}
+```{r Density ANOVA: Check Assumptions, eval = FALSE}
 check_model(density.anova)
 ```
 
@@ -305,42 +357,6 @@ kable(
 	caption = "ANOVA result for density by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Density ANOVA Tukey HSD: Season, echo = FALSE}
-## Tukey groups
-density.season.groups <- HSD.test(
-	density.anova, trt = "Season", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	density.season.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to seasons differing in density.",
-	col.names = c("Density", "Grouping")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\vspace{10pt}
-
-```{r Density ANOVA Tukey HSD: Season and Period, echo = FALSE}
-## Tukey groups
-density.season.period.groups <- HSD.test(
-	density.anova, trt = c("Season", "Period"), group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	density.season.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to seasons differing in density.",
-	col.names = c("Density", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -362,17 +378,127 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
+\vspace{10pt}
+
+```{r Calculate emmeans: Density ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+density.anova.emmeans.period <- emmeans(
+	density.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+density.anova.emmeans.season <- emmeans(
+	density.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+density.anova.emmeans.period.season <- emmeans(
+	density.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Season): Density ANOVA, echo = FALSE}
+kable(
+	tidy(density.anova.emmeans.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means of season in the density ANOVA.",
+	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period x Season): Density ANOVA, echo = FALSE}
+kable(
+	tidy(density.anova.emmeans.period.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means of period and season in the density ANOVA.",
+	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Season): Density ANOVA, echo = FALSE}
+kable(
+	tidy(density.anova.emmeans.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts between season in the density ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period x Season): Density ANOVA, echo = FALSE}
+kable(
+	tidy(density.anova.emmeans.period.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts between period and season in the density ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Season): Density ANOVA, echo = FALSE}
+kable(
+	eff_size(density.anova.emmeans.season,
+					 sigma = sigma(density.anova),
+					 edf = df.residual(density.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by season in the density ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period x Season): Density ANOVA, echo = FALSE}
+kable(
+	eff_size(density.anova.emmeans.period.season,
+					 sigma = sigma(density.anova),
+					 edf = df.residual(density.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period and season in the density ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
 
 
 \newpage
 # Consumer & Predators ANOVAs
 
-Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Post-hoc Tukey's HSD tests were conducted using `HSD.test()` to examine for differences among groups for influential factors in the ANOVA.
+Biomass and density values were subset and summed for consumer and predator taxa. Biomass and density were then compared  by sampling period, season, and the interaction using an ANOVA with Type II sums-of-squares. ANOVA assumptions were inspected graphically using `check_model()`, and effect sizes for the ANOVAs were calculated as $\eta^2_P$ using `eta_squared()`. Pairwise contrasts between influential factors were performed using `emmeans()`, with effect sizes for contrasts calculated as Cohen's d.
 
 \vspace{10pt}
 
@@ -416,7 +542,7 @@ consumer.biomass.anova <- lm(
 
 \vspace{10pt}
 
-```{r Consumer Biomass ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the consumer biomass ANOVA."}
+```{r Consumer Biomass ANOVA: Check Assumptions, eval = FALSE}
 check_model(consumer.biomass.anova)
 ```
 
@@ -430,42 +556,6 @@ kable(
 	caption = "ANOVA results for consumer biomass by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Consumer Biomass ANOVA Tukey HSD: Period, echo = FALSE}
-## Tukey groups
-consumer.biomass.period.groups <- HSD.test(
-	consumer.biomass.anova, trt = "Period", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	consumer.biomass.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to periods differing in consumer biomass.",
-	col.names = c("Consumer Biomass", "Grouping")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\vspace{10pt}
-
-```{r Consumer Biomass ANOVA Tukey HSD: Season and Period, echo = FALSE}
-## Tukey groups
-consumer.biomass.season.period.groups <- HSD.test(
-	consumer.biomass.anova, trt = c("Season", "Period"), group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	consumer.biomass.season.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to season and period groups differing in consumer biomass.",
-	col.names = c("Consumer Biomass", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -487,9 +577,120 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the consumer biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Consumer Biomass ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+consumer.biomass.anova.emmeans.period <- emmeans(
+	consumer.biomass.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+consumer.biomass.anova.emmeans.season <- emmeans(
+	consumer.biomass.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+consumer.biomass.anova.emmeans.period.season <- emmeans(
+	consumer.biomass.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.biomass.anova.emmeans.period$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by period in the consumer biomass ANOVA.",
+	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.biomass.anova.emmeans.period.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by period and season in the consumer biomass ANOVA.",
+	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.biomass.anova.emmeans.period$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by period in the consumer biomass ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.biomass.anova.emmeans.period.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by period and season in the consumer biomass ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	eff_size(consumer.biomass.anova.emmeans.period,
+					 sigma = sigma(consumer.biomass.anova),
+					 edf = df.residual(consumer.biomass.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period in the consumer biomass ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
+kable(
+	eff_size(consumer.biomass.anova.emmeans.period.season,
+					 sigma = sigma(consumer.biomass.anova),
+					 edf = df.residual(consumer.biomass.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period and seasonin the consumer biomass ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -504,7 +705,7 @@ consumer.density.anova <- lm(
 
 \vspace{10pt}
 
-```{r Consumer Density ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the consumer density ANOVA."}
+```{r Consumer Density ANOVA: Check Assumptions, eval = FALSE}
 check_model(consumer.density.anova)
 ```
 
@@ -518,42 +719,6 @@ kable(
 	caption = "ANOVA results for consumer density by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Consumer Density ANOVA Tukey HSD: Season, echo = FALSE}
-## Tukey groups
-consumer.density.season.groups <- HSD.test(
-	consumer.density.anova, trt = "Season", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	consumer.density.season.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to seasons differing in consumer density.",
-	col.names = c("Consumer Density", "Grouping")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\vspace{10pt}
-
-```{r Consumer Density ANOVA Tukey HSD: Season and Period, echo = FALSE}
-## Tukey groups
-consumer.density.season.period.groups <- HSD.test(
-	consumer.density.anova, trt = c("Season", "Period"), group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	consumer.density.season.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to season and period groups differing in consumer density.",
-	col.names = c("Consumer Density", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -575,9 +740,120 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the consumer density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Consumer Density ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+consumer.density.anova.emmeans.period <- emmeans(
+	consumer.density.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+consumer.density.anova.emmeans.season <- emmeans(
+	consumer.density.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+consumer.density.anova.emmeans.period.season <- emmeans(
+	consumer.density.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.density.anova.emmeans.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by season in the consumer density ANOVA.",
+	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period x Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.density.anova.emmeans.period.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by period and season in the consumer density ANOVA.",
+	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.density.anova.emmeans.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by season in the consumer density ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period x Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	tidy(consumer.density.anova.emmeans.period.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by period and season in the consumer density ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	eff_size(consumer.density.anova.emmeans.season,
+					 sigma = sigma(consumer.density.anova),
+					 edf = df.residual(consumer.density.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by season in the consumer density ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period x Season): Consumer Density ANOVA, echo = FALSE}
+kable(
+	eff_size(consumer.density.anova.emmeans.period.season,
+					 sigma = sigma(consumer.density.anova),
+					 edf = df.residual(consumer.density.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period and season in the consumer density ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -594,7 +870,7 @@ predator.biomass.anova <- lm(
 
 \vspace{10pt}
 
-```{r Predator Biomass ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the predator biomass ANOVA."}
+```{r Predator Biomass ANOVA: Check Assumptions, eval = FALSE}
 check_model(predator.biomass.anova)
 ```
 
@@ -608,24 +884,6 @@ kable(
 	caption = "ANOVA results for predator biomass by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Predator Biomass ANOVA Tukey HSD: Season, echo = FALSE}
-## Tukey groups
-predator.biomass.season.groups <- HSD.test(
-	predator.biomass.anova, trt = "Season", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	predator.biomass.season.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to seasons differing in predator biomass.",
-	col.names = c("Predator Biomass", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -647,9 +905,79 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the predator biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Predator Biomass ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+predator.biomass.anova.emmeans.period <- emmeans(
+	predator.biomass.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+predator.biomass.anova.emmeans.season <- emmeans(
+	predator.biomass.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+predator.biomass.anova.emmeans.period.season <- emmeans(
+	predator.biomass.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Season): Predator Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(predator.biomass.anova.emmeans.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means of season in the predator biomass ANOVA.",
+	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Season): Predator Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(predator.biomass.anova.emmeans.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by season in the predator biomass ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Season): Predator Biomass ANOVA, echo = FALSE}
+kable(
+	eff_size(predator.biomass.anova.emmeans.season,
+					 sigma = sigma(predator.biomass.anova),
+					 edf = df.residual(predator.biomass.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by season in the predator biomass ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -664,7 +992,7 @@ predator.density.anova <- lm(
 
 \vspace{10pt}
 
-```{r Predator Density ANOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the predator density ANOVA."}
+```{r Predator Density ANOVA: Check Assumptions, eval = FALSE}
 check_model(predator.density.anova)
 ```
 
@@ -678,24 +1006,6 @@ kable(
 	caption = "ANOVA results for predator density by period, season, and the interaction.",
 	col.names = c("Sums-of-Squares", "df", "F", "P-value")
 	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
-```
-
-\newpage
-
-```{r Predator Density ANOVA Tukey HSD: Period, echo = FALSE}
-## Tukey groups
-predator.density.period.groups <- HSD.test(
-	predator.density.anova, trt = "Period", group = TRUE
-	)
-
-## Export the Tukey group table
-kable(
-	predator.density.period.groups$groups,
-	booktabs = TRUE, 
-	caption = "Tukey groups assigned to periods differing in predator density.",
-	col.names = c("Predator Density", "Grouping")
-	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
@@ -717,9 +1027,79 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the predator density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Predator Density ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+predator.density.anova.emmeans.period <- emmeans(
+	predator.density.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+predator.density.anova.emmeans.season <- emmeans(
+	predator.density.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+predator.density.anova.emmeans.period.season <- emmeans(
+	predator.density.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period): Predator Density ANOVA, echo = FALSE}
+kable(
+	tidy(predator.density.anova.emmeans.period$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means of period in the predator density ANOVA.",
+	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period): Predator Density ANOVA, echo = FALSE}
+kable(
+	tidy(predator.density.anova.emmeans.period$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts between period in the predator density ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period): Predator Density ANOVA, echo = FALSE}
+kable(
+	eff_size(predator.density.anova.emmeans.period,
+					 sigma = sigma(predator.density.anova),
+					 edf = df.residual(predator.density.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period in the predator density ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -1432,9 +1812,11 @@ percent.predator.density.change <- (
 \newpage
 # Biomass & Density Chi-Squared Tests
 
-We performed a chi-squared test to determine whether there were differences in biomass by size groupings between sampling period for consumers and predators. Chi-squared tests were performed using `chisq.test()`, with observed and expected frequencies examined to confirm test assumptions were met. Additionally, we assessed residuals to determine over- and under-represented size groupings by sampling period. Residuals were calculated as:
+We performed chi-squared tests to determine whether there were differences in biomass by size groupings between sampling period for consumers and predators. Chi-squared tests were performed using `chisq.test()`, with observed and expected frequencies examined to confirm test assumptions were met. Additionally, we assessed residuals to determine over- and under-represented size groupings by sampling period. Residuals were calculated as:
 
 $$\frac{Observed - Expected}{\sqrt{Expected}}$$
+
+Effect sizes for the chi-squared tests were calculated as Cramer's V using the `cramers_v()` function in the `effectsize` package.
 
 \vspace{10pt}
 
@@ -1467,6 +1849,14 @@ consumer.biomass.chi.square.data$`2010s` <- c(
 ```{r Consumer Biomass Chi-Squared Test, echo = TRUE}
 consumer.biomass.chi.square.test <- chisq.test(consumer.biomass.chi.square.data)
 # chi-squared = 2933.7, df = 2, P < 0.00001
+```
+
+\vspace{10pt}
+
+```{r Consumer Biomass Chi-Squared Test: Effect Size, echo = TRUE, results = "hide"}
+## Calculate Cramer's V
+cramers_v(consumer.biomass.chi.square.data)
+# V = 0.10
 ```
 
 \vspace{10pt}
@@ -1555,6 +1945,14 @@ consumer.density.chi.square.test <- chisq.test(consumer.density.chi.square.data)
 
 \vspace{10pt}
 
+```{r Consumer Density Chi-Squared Test: Effect Size, echo = TRUE, results = "hide"}
+## Calculate Cramer's V
+cramers_v(consumer.density.chi.square.data)
+# V = 0.10
+```
+
+\vspace{10pt}
+
 ```{r Consumer Density Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
 	consumer.density.chi.square.test$observed,
@@ -1639,6 +2037,14 @@ predator.biomass.chi.square.test <- chisq.test(predator.biomass.chi.square.data)
 
 \vspace{10pt}
 
+```{r Predator Biomass Chi-Squared Test: Effect Size, echo = TRUE, results = "hide"}
+## Calculate Cramer's V
+cramers_v(predator.biomass.chi.square.data)
+# V = 0.03
+```
+
+\vspace{10pt}
+
 ```{r Predator Biomass Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
 	predator.biomass.chi.square.test$observed,
@@ -1717,6 +2123,14 @@ predator.density.chi.square.data$`2010s` <- c(
 ```{r Predator Density Chi-Squared Test, echo = TRUE}
 predator.density.chi.square.test <- chisq.test(predator.density.chi.square.data)
 # chi-squared = 6.8918, df = 2, P = 0.03188
+```
+
+\vspace{10pt}
+
+```{r Predator Density Chi-Squared Test: Effect Size, echo = TRUE, results = "hide"}
+## Calculate Cramer's V
+cramers_v(predator.density.chi.square.data)
+# V < 0.001; essentially no effect or difference
 ```
 
 \vspace{10pt}
@@ -1971,7 +2385,7 @@ t.test(Neurocordulia.80.size + 0.00001, Neurocordulia.10.size + 0.00001,
 \newpage
 # Community Composition
 
-Community composition was evaluated by calculating a Bray-Curtis distance matrix on a taxon-by-sample biomass matrix. We then conducted a PERMANOVA on this distance matrix to test for effects of sampling period, season, and the interaction on community structure.
+Community composition was evaluated by calculating a Bray-Curtis distance matrix on a taxon-by-sample biomass matrix. We then conducted a PERMANOVA on this distance matrix to test for effects of sampling period, season, discharge, and water temperature on community structure.
 
 \vspace{10pt}
 
@@ -1979,7 +2393,8 @@ Community composition was evaluated by calculating a Bray-Curtis distance matrix
 ## Data management for the PERMANOVA
 # Sample information for the distance matrix
 distance.matrix.info <- biomass.data %>%
-	select(UID, Year, Season, Period)
+	select(UID, Year, Season, Period, Mean_Discharge, Water_Temperature) %>%
+	na.omit()
 
 # Taxa-by-abundance community matrix
 community.matrix <- log(invertebrate.biomass.matrix + 1)
@@ -1987,17 +2402,17 @@ community.matrix <- log(invertebrate.biomass.matrix + 1)
 
 \vspace{10pt}
 
-```{r Calculate Bray-Curtis Distance, echo = TRUE}
+```{r Calculate Bray-Curtis Distance, echo = TRUE, eval = FALSE}
 ## Calculate Bray-Curtis Distance
 BC.distance.biomass <- vegdist(community.matrix, method = "bray")
 ```
 
 \vspace{10pt}
 
-```{r NMDS Ordination, echo = TRUE}
+```{r NMDS Ordination, echo = TRUE, eval = FALSE}
 ## NMDS Ordination
 BC.NMDS.biomass <- monoMDS(BC.distance.biomass, k = 2, model = "global")
-# Stress = 0.1819
+# Stress = 0.190
 ```
 
 ```{r Stressplot, include = FALSE}
@@ -2006,10 +2421,16 @@ stressplot(BC.NMDS.biomass, las = 1)
 
 \vspace{10pt}
 
-```{r PERMANOVA, echo = TRUE}
+```{r PERMANOVA, echo = TRUE, eval = FALSE}
 ## PERMANOVA by period, season, and the interaction
-community.composition.PERMANOVA <- adonis(
-	BC.distance.biomass ~ Period * Season,
+community.composition.PERMANOVA <- adonis2(
+	BC.distance.biomass ~ Period + Season + Period:Season
+	                      + Mean_Discharge + Water_Temperature
+	                      + Mean_Discharge:Water_Temperature
+	                      + Mean_Discharge:Period + Mean_Discharge:Season
+	                      + Mean_Discharge:Period:Season
+	                      + Water_Temperature:Period + Water_Temperature:Season
+	                      + Water_Temperature:Period:Season,
 	data = distance.matrix.info, 
 	permutations = 10000
 	)
@@ -2019,11 +2440,11 @@ community.composition.PERMANOVA <- adonis(
 
 ```{r PERMANOVA Summary Table, echo = FALSE}
 kable(
-	tidy(community.composition.PERMANOVA$aov.tab),
+	tidy(community.composition.PERMANOVA),
 	booktabs = TRUE,
 	digits = 3,
-	caption = "Summary of the PERMANOVA comparing composition by period, season, and the interaction.",
-	col.names = c("Term", "df", "Sums-of-Squares", "Mean Square", "F", "$R^2$", "P-value")
+	caption = "Summary of the PERMANOVA comparing composition by period, season, mean discharge, and water temperature, with selected two- and three-way interaction terms.",
+	col.names = c("Term", "df", "Sums-of-Squares", "R2", "F", "P-value")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
@@ -2044,7 +2465,7 @@ period.groups <- c(rep(1, 25), rep(2, 24))
 
 \vspace{10pt}
 
-```{r Run the Indicator Taxa Analysis, echo = TRUE}
+```{r Run the Indicator Taxa Analysis, echo = TRUE, eval = FALSE}
 ## Run indicator analysis comparing by period
 indicator.analysis <- multipatt(
 	community.matrix,
@@ -2078,7 +2499,7 @@ kable(
 
 We evaluated the relationship between dissolved organic carbon and discharge using an ANCOVA. Monthly averages of carbon and discharge during our sampling periods (i.e., 1980s = December 1981-November 1983, 2010s = July 2015-August 2017) were used for this analysis. We structured the ANCOVA as:
 
-$$ Carbon = \alpha + \beta_{1}(\operatorname{ln(Discharge)}) + \beta_{2}(\operatorname{Period}) + \beta_{3}(\operatorname{ln(Discharge)} \times \operatorname{Period}) + \epsilon$$
+$$Carbon = \alpha + \beta_{1}(\operatorname{ln(Discharge)}) + \beta_{2}(\operatorname{Period}) + \beta_{3}(\operatorname{ln(Discharge)} \times \operatorname{Period}) + \epsilon$$
 
 with the ANCOVA fitted using `lm()` and model assumptions checked using `check_model()`. Influence of terms within the model was estimated by Type II sums-of-squares using the `Anova()` function.
 
@@ -2093,7 +2514,7 @@ carbon.discharge.ancova <- lm(
 
 \vspace{10pt}
 
-```{r Carbon & Discharge ANCOVA: Check Assumptions, echo = FALSE, fig.cap = "Diagnostic plots of the carbon by discharge ANCOVA."}
+```{r Carbon & Discharge ANCOVA: Check Assumptions, eval = FALSE}
 check_model(carbon.discharge.ancova)
 ```
 
@@ -2128,7 +2549,7 @@ kable(
 	booktabs = TRUE,
 	digits = 3,
 	caption = "Table of the effect sizes in the carbon by discharge ANCOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI_Low", "CI_High")
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
 	) %>% 
 	kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
