@@ -305,12 +305,38 @@ kable(
 
 \vspace{10pt}
 
+```{r Estimated Marginal Means (Season): Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(biomass.anova.emmeans.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by season in the biomass ANOVA.",
+	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
 ```{r Contrasts (Period): Biomass ANOVA, echo = FALSE}
 kable(
 	tidy(biomass.anova.emmeans.period$contrasts),
 	booktabs = TRUE, 
 	digits = 3, 
 	caption = "Contrasts by period in the biomass ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Season): Biomass ANOVA, echo = FALSE}
+kable(
+	tidy(biomass.anova.emmeans.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Contrasts by season in the biomass ANOVA.",
 	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
 	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
@@ -326,6 +352,21 @@ kable(
 	booktabs = TRUE, 
 	digits = 3, 
 	caption = "Effect sizes for the constrasts by period in the biomass ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Season): Biomass ANOVA, echo = FALSE}
+kable(
+	eff_size(biomass.anova.emmeans.season,
+					 sigma = sigma(biomass.anova),
+					 edf = df.residual(biomass.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the constrasts by season in the biomass ANOVA.",
 	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
 	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
