@@ -270,7 +270,7 @@ biomass.anova.emmeans.period <- emmeans(
 	biomass.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -278,7 +278,7 @@ biomass.anova.emmeans.season <- emmeans(
 	biomass.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -286,7 +286,7 @@ biomass.anova.emmeans.period.season <- emmeans(
 	biomass.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
@@ -433,7 +433,7 @@ density.anova.emmeans.period <- emmeans(
 	density.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -441,7 +441,7 @@ density.anova.emmeans.season <- emmeans(
 	density.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -449,7 +449,7 @@ density.anova.emmeans.period.season <- emmeans(
 	density.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
@@ -632,7 +632,7 @@ consumer.biomass.anova.emmeans.period <- emmeans(
 	consumer.biomass.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -640,7 +640,7 @@ consumer.biomass.anova.emmeans.season <- emmeans(
 	consumer.biomass.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -648,7 +648,7 @@ consumer.biomass.anova.emmeans.period.season <- emmeans(
 	consumer.biomass.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
@@ -795,7 +795,7 @@ consumer.density.anova.emmeans.period <- emmeans(
 	consumer.density.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -803,7 +803,7 @@ consumer.density.anova.emmeans.season <- emmeans(
 	consumer.density.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -811,7 +811,7 @@ consumer.density.anova.emmeans.period.season <- emmeans(
 	consumer.density.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
@@ -960,7 +960,7 @@ predator.biomass.anova.emmeans.period <- emmeans(
 	predator.biomass.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -968,7 +968,7 @@ predator.biomass.anova.emmeans.season <- emmeans(
 	predator.biomass.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -976,7 +976,7 @@ predator.biomass.anova.emmeans.period.season <- emmeans(
 	predator.biomass.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
@@ -1082,7 +1082,7 @@ predator.density.anova.emmeans.period <- emmeans(
 	predator.density.anova,
 	specs = pairwise ~ Period,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Season
@@ -1090,7 +1090,7 @@ predator.density.anova.emmeans.season <- emmeans(
 	predator.density.anova,
 	specs = pairwise ~ Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 
 # Period x Season
@@ -1098,7 +1098,7 @@ predator.density.anova.emmeans.period.season <- emmeans(
 	predator.density.anova,
 	specs = pairwise ~ Period + Season,
 	weights = "cells",
-	adjust = "none"
+	adjust = "fdr"
 	)
 ```
 
