@@ -3,11 +3,15 @@
 Data, metadata, and R code for “Taxon-specific biomass declines in a blackwater river: the importance of a community approach to understanding invertebrate loss.”
 ================
 David Murray-Stoker
+
 7 March 2022
 
 Data, metadata, and all analytical code for the manuscript:
 
 Murray-Stoker, K. M. et al. Taxon-specific biomass declines in a blackwater river: the importance of a community approach to understanding invertebrate loss.
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6335666.svg)](https://doi.org/10.5281/zenodo.6335666)
+
 
 ## Abstract
 
