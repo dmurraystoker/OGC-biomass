@@ -2304,7 +2304,7 @@ predator.2010s.biomass.contribution <- (
 \newpage
 # Individual Body Size Change
 
-We tested whether mean body sizes of the most dominant primary consumers and predators were different between sampling periods. We calculated the average percent composition of biomass for each taxon within each sampling period and focused on the five most dominant consumers and the three most dominant predators. We calculated average individual mass for each sampling month by dividing biomass by abundance and performed two-sample Welch t-tests on average mass between the 1980s and the 2010s for each of the dominant taxa.
+We tested whether mean body sizes of the most dominant primary consumers and predators were different between sampling periods. We calculated the average percent composition of biomass for each taxon within each sampling period and focused on the five most dominant consumers and the three most dominant predators. We calculated average individual mass for each sampling month by dividing biomass by abundance and performed two-sample Welch t-tests on average mass between the 1980s and the 2010s for each of the dominant taxa. Effect sizes were calculated using `cohens_d()`.
 
 + Dominant consumers = Hydropsyche, Cheumatopsyche, Chimarra, Heptageniidae, Chironomidae
 + Dominant predators = Corydalus, Paragnetina, Neurocordulia
@@ -2356,6 +2356,9 @@ Neurocordulia.10.size <- ((biomass.2010s$Neurocordulia)/(density.2010s$Neurocord
 t.test(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001), 
        paired = FALSE)
 # t = 1.8613, df = 46.739, P-value = 0.069
+
+cohens_d(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001))
+# d = 0.53
 ```
 
 \vspace{10pt}
@@ -2365,6 +2368,9 @@ t.test(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001),
 t.test(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.00001), 
        paired = FALSE)
 # t = 5.1915, df = 46.86, P-value < 0.001
+
+cohens_d(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.00001))
+# d = 1.48
 ```
 
 \vspace{10pt}
@@ -2374,6 +2380,9 @@ t.test(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.000
 t.test(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001), 
        paired = FALSE)
 # t = 0.42278, df = 44.042, P-value = 0.675
+
+cohens_d(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001))
+# d = 0.12
 ```
 
 \vspace{10pt}
@@ -2383,6 +2392,9 @@ t.test(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001),
 t.test(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001), 
        paired = FALSE)
 # t = -0.40634, df = 46.633, P-value = 0.686
+
+cohens_d(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001))
+# d = 0.12
 ```
 
 \vspace{10pt}
@@ -2392,6 +2404,9 @@ t.test(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001
 t.test(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001), 
        paired = FALSE)
 # t = -0.17408, df = 46.334, P-value = 0.863
+
+cohens_d(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001))
+# d = 0.05
 ```
 
 \vspace{10pt}
@@ -2401,6 +2416,9 @@ t.test(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001),
 t.test(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001), 
        paired = FALSE)
 # t = 1.2464, df = 31.152, P-value = 0.222
+
+cohens_d(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001))
+# d = 0.41
 ```
 
 \vspace{10pt}
@@ -2410,6 +2428,9 @@ t.test(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001),
 t.test(Paragnetina.80.size + 0.00001, Paragnetina.10.size + 0.00001, 
        paired = FALSE)
 # t = 0.2442, df = 26.9, P-value = 0.809
+
+cohens_d(log(Paragnetina.80.size + 0.00001), log(Paragnetina.10.size + 0.00001))
+# d = 0.45
 ```
 
 \vspace{10pt}
@@ -2419,6 +2440,9 @@ t.test(Paragnetina.80.size + 0.00001, Paragnetina.10.size + 0.00001,
 t.test(Neurocordulia.80.size + 0.00001, Neurocordulia.10.size + 0.00001, 
        paired = FALSE)
 # t = 1.3378, df = 28.187, P-value = 0.192
+
+cohens_d(log(Neurocordulia.80.size + 0.00001), log(Neurocordulia.10.size + 0.00001))
+# d = 0.53
 ```
 
 
