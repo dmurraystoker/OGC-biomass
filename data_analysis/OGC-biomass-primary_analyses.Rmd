@@ -548,23 +548,27 @@ Biomass and density values were subset and summed for consumer and predator taxa
 # Biomass
 consumer.biomass <- invertebrate.biomass.matrix[, 1:46] %>%
 	rowSums()
-consumer.biomass.data <- tibble(sampling.info, consumer.biomass)
+consumer.biomass.data <- tibble(sampling.info, consumer.biomass) %>%
+	rename(Summed_Biomass = consumer.biomass)
 
 # Density
 consumer.density <- invertebrate.density.matrix[, 1:46] %>%
 	rowSums()
-consumer.density.data <- tibble(sampling.info, consumer.density)
+consumer.density.data <- tibble(sampling.info, consumer.density) %>%
+	rename(Summed_Density = consumer.density)
 
 ## Subset data to only include predator taxa
 # Biomass
 predator.biomass <- invertebrate.biomass.matrix[, 47:72] %>%
 	rowSums()
-predator.biomass.data <- tibble(sampling.info, predator.biomass)
+predator.biomass.data <- tibble(sampling.info, predator.biomass) %>%
+	rename(Summed_Biomass = predator.biomass)
 
 # Density
 predator.density <- invertebrate.density.matrix[, 47:72] %>%
 	rowSums()
-predator.density.data <- tibble(sampling.info, predator.density)
+predator.density.data <- tibble(sampling.info, predator.density) %>%
+	rename(Summed_Density = predator.density)
 ```
 
 
@@ -1235,20 +1239,20 @@ Consumer taxa within each size grouping:
 consumer.biomass.1980s <- biomass.data %>%
 	filter(Period == "1980") %>%
 	select(Amphinemura:Tricorythodes) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 1980s consumers
-consumer.biomass.1980s.total.biomass <- sum(consumer.biomass.1980s$summed_biomass)
+consumer.biomass.1980s.total.biomass <- sum(consumer.biomass.1980s$Summed_Biomass)
 # Summed biomass = 204899.2
 
 # 2010s
 consumer.biomass.2010s <- biomass.data %>%
 	filter(Period == "2010") %>%
 	select(Amphinemura:Tricorythodes) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 2010s consumers
-consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$summed_biomass)
+consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$Summed_Biomass)
 # Summed biomass = 97934.14
 ```
 
@@ -1264,10 +1268,10 @@ group.1.consumer.biomass.1980s <- consumer.biomass.1980s %>%
 				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
 				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
 				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 1 total biomass
-group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.1980s$summed_biomass)
+group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.1980s$Summed_Biomass)
 # Summed biomass = 78968.09
 ```
 
@@ -1277,10 +1281,10 @@ group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.198
 ## 1980s consumers group 2 taxa
 group.2.consumer.biomass.1980s <- consumer.biomass.1980s %>%
 	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 2 total biomass
-group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.1980s$summed_biomass)
+group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.1980s$Summed_Biomass)
 # Summed biomass = 116946.4
 ```
 
@@ -1290,10 +1294,10 @@ group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.198
 ## 1980s consumers group 3 taxa
 group.3.consumer.biomass.1980s <- consumer.biomass.1980s %>%
 	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 3 total biomass
-group.3.consumer.biomass.1980s.total.biomass <- sum(group.3.consumer.biomass.1980s$summed_biomass)
+group.3.consumer.biomass.1980s.total.biomass <- sum(group.3.consumer.biomass.1980s$Summed_Biomass)
 # Summed biomass = 8984.69
 ```
 
@@ -1309,10 +1313,10 @@ group.1.consumer.biomass.2010s <- consumer.biomass.2010s %>%
 				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
 				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
 				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 1 total biomass
-group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.2010s$summed_biomass)
+group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.2010s$Summed_Biomass)
 # Summed biomass = 38115.6
 ```
 
@@ -1322,10 +1326,10 @@ group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.201
 ## 2010s consumers group 2 taxa
 group.2.consumer.biomass.2010s <- consumer.biomass.2010s %>%
 	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 2 total biomass
-group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.2010s$summed_biomass)
+group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.2010s$Summed_Biomass)
 # Summed biomass = 59127.29
 ```
 
@@ -1335,10 +1339,10 @@ group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.201
 ## 2010s consumers group 3 taxa
 group.3.consumer.biomass.2010s <- consumer.biomass.2010s %>%
 	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 3 total biomass
-group.3.consumer.biomass.2010s.total.biomass <- sum(group.3.consumer.biomass.2010s$summed_biomass)
+group.3.consumer.biomass.2010s.total.biomass <- sum(group.3.consumer.biomass.2010s$Summed_Biomass)
 # Summed biomass = 691.2489
 ```
 
@@ -1379,20 +1383,20 @@ Predator taxa within each size grouping:
 predator.biomass.1980s <- biomass.data %>%
 	filter(Period == "1980") %>%
 	select(Acroneuria:Plecoptera) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 1980s predators
-predator.biomass.1980s.total.biomass <- sum(predator.biomass.1980s$summed_biomass)
+predator.biomass.1980s.total.biomass <- sum(predator.biomass.1980s$Summed_Biomass)
 # Summed biomass = 35683.48
 
 # 2010s
 predator.biomass.2010s <- biomass.data %>%
 	filter(Period == "2010") %>%
 	select(Acroneuria:Plecoptera) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 2010s predators
-predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$summed_biomass)
+predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$Summed_Biomass)
 # Summed biomass = 41286.46
 ```
 
@@ -1404,10 +1408,10 @@ group.1.predator.biomass.1980s <- predator.biomass.1980s %>%
 	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
 				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
 				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 1 total biomass
-group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.1980s$summed_biomass)
+group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.1980s$Summed_Biomass)
 # Summed biomass = 13214.15
 ```
 
@@ -1417,10 +1421,10 @@ group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.198
 ## 1980s predators group 2 taxa
 group.2.predator.biomass.1980s <- predator.biomass.1980s %>%
 	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 2 total biomass
-group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.1980s$summed_biomass)
+group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.1980s$Summed_Biomass)
 # Summed biomass = 17395.72
 ```
 
@@ -1430,10 +1434,10 @@ group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.198
 ## 1980s predators group 3 taxa
 group.3.predator.biomass.1980s <- predator.biomass.1980s %>%
 	select(Helopicus, Neurocordulia) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 3 total biomass
-group.3.predator.biomass.1980s.total.biomass <- sum(group.3.predator.biomass.1980s$summed_biomass)
+group.3.predator.biomass.1980s.total.biomass <- sum(group.3.predator.biomass.1980s$Summed_Biomass)
 # Summed biomass = 5073.609
 ```
 
@@ -1445,10 +1449,10 @@ group.1.predator.biomass.2010s <- predator.biomass.2010s %>%
 	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
 				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
 				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 1 total biomass
-group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.2010s$summed_biomass)
+group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.2010s$Summed_Biomass)
 # Summed biomass = 15968.22
 ```
 
@@ -1458,10 +1462,10 @@ group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.201
 ## 2010s predators group 2 taxa
 group.2.predator.biomass.2010s <- predator.biomass.2010s %>%
 	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 2 total biomass
-group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.2010s$summed_biomass)
+group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.2010s$Summed_Biomass)
 # Summed biomass = 18922.44
 ```
 
@@ -1471,10 +1475,10 @@ group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.201
 ## 2010s predators group 3 taxa
 group.3.predator.biomass.2010s <- predator.biomass.2010s %>%
 	select(Helopicus, Neurocordulia) %>%
-	mutate(summed_biomass = rowSums(.))
+	mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 3 total biomass
-group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.2010s$summed_biomass)
+group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.2010s$Summed_Biomass)
 # Summed biomass = 6395.791
 ```
 
