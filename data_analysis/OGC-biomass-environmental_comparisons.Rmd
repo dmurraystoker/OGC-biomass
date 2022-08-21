@@ -153,7 +153,6 @@ ANOVAs were conducted for discharge, precipitation, water temperature, and air t
 
 
 \newpage
-
 ### Discharge
 
 ```{r Discharge ANOVA, echo = TRUE}
@@ -310,6 +309,171 @@ kable(
 	booktabs = TRUE, 
 	digits = 3, 
 	caption = "Effect sizes for the pairwise contrasts by period and season in the discharge ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+
+
+
+\newpage
+### Carbon
+
+```{r Carbon ANOVA, echo = TRUE}
+carbon.anova <- lm(
+	Carbon ~ Period * Season, data = environmental.data
+	)
+```
+
+\vspace{10pt}
+
+```{r Carbon ANOVA: Check Assumptions, eval = FALSE}
+check_model(carbon.anova)
+```
+
+\vspace{10pt}
+
+```{r Carbon ANOVA: ANOVA Table, echo = FALSE}
+kable(
+	Anova(carbon.anova, type = "II"),
+	booktabs = TRUE,
+	digits = 3,
+	caption = "ANOVA results for carbon by period, season, and the interaction.",
+	col.names = c("Sums-of-Squares", "df", "F", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Carbon ANOVA: Effect Sizes, include = FALSE}
+## Calculating partial eta-squared for each factor in the carbon ANOVA
+carbon.anova.eta.squared <- eta_squared(
+	Anova(carbon.anova, type = "II"),
+	partial = TRUE
+	)
+```
+
+\vspace{10pt}
+
+```{r Carbon ANOVA: Effect Size Table, echo = FALSE}
+kable(
+	carbon.anova.eta.squared,
+	booktabs = TRUE,
+	digits = 3,
+	caption = "Table of the effect sizes in the carbon ANOVA.",
+	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Calculate emmeans: Carbon ANOVA, include = FALSE}
+## Calculate estimated marginal means
+# Period
+carbon.anova.emmeans.period <- emmeans(
+	carbon.anova,
+	specs = pairwise ~ Period,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Season
+carbon.anova.emmeans.season <- emmeans(
+	carbon.anova,
+	specs = pairwise ~ Season,
+	weights = "cells",
+	adjust = "none"
+	)
+
+# Period x Season
+carbon.anova.emmeans.period.season <- emmeans(
+	carbon.anova,
+	specs = pairwise ~ Period + Season,
+	weights = "cells",
+	adjust = "none"
+	)
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Season): Carbon ANOVA, echo = FALSE}
+kable(
+	tidy(carbon.anova.emmeans.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by season in the carbon ANOVA.",
+	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Estimated Marginal Means (Period x Season): Carbon ANOVA, echo = FALSE}
+kable(
+	tidy(carbon.anova.emmeans.period.season$emmeans),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Estimated marginal means by period and season in the carbon ANOVA.",
+	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+	) %>% 
+	kable_styling(latex_options = c("HOLD_position", "striped"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Season): Carbon ANOVA, echo = FALSE}
+kable(
+	tidy(carbon.anova.emmeans.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by season in the carbon ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrasts (Period x Season): Carbon ANOVA, echo = FALSE}
+kable(
+	tidy(carbon.anova.emmeans.period.season$contrasts),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Pairwise contrasts by period and season in the carbon ANOVA.",
+	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Season): Carbon ANOVA, echo = FALSE}
+kable(
+	eff_size(carbon.anova.emmeans.season,
+					 sigma = sigma(carbon.anova),
+					 edf = df.residual(carbon.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by season in the carbon ANOVA.",
+	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+	) %>%
+	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+\vspace{10pt}
+
+```{r Contrast Effect Sizes (Period x Season): Carbon ANOVA, echo = FALSE}
+kable(
+	eff_size(carbon.anova.emmeans.period.season,
+					 sigma = sigma(carbon.anova),
+					 edf = df.residual(carbon.anova)),
+	booktabs = TRUE, 
+	digits = 3, 
+	caption = "Effect sizes for the pairwise contrasts by period and season in the carbon ANOVA.",
 	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
 	) %>%
 	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
