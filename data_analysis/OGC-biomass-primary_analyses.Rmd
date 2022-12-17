@@ -49,15 +49,15 @@ Raw data were imported and compiled for each of the two sampling periods, 1980s 
 
 ```{r Data Management: Load Raw Data, echo = TRUE, eval = FALSE}
 ## Read in raw data files
-raw.biomass.1982  <- read_csv("data/OGC_biomass_data-1982.csv", show_col_types = FALSE)
-raw.biomass.1983  <- read_csv("data/OGC_biomass_data-1983.csv", show_col_types = FALSE)
+raw.biomass.1982 <- read_csv("data/OGC_biomass_data-1982.csv", show_col_types = FALSE)
+raw.biomass.1983 <- read_csv("data/OGC_biomass_data-1983.csv", show_col_types = FALSE)
 raw.biomass.2010s <- read_csv("data/OGC_biomass_data-2010s.csv", show_col_types = FALSE)
 
 ## Set column structure for the raw data
-raw.biomass.1982$Date  <- as_factor(raw.biomass.1982$Date)
-raw.biomass.1982$Snag  <- as_factor(raw.biomass.1982$Snag)
-raw.biomass.1983$Date  <- as_factor(raw.biomass.1983$Date)
-raw.biomass.1983$Snag  <- as_factor(raw.biomass.1983$Snag)
+raw.biomass.1982$Date <- as_factor(raw.biomass.1982$Date)
+raw.biomass.1982$Snag <- as_factor(raw.biomass.1982$Snag)
+raw.biomass.1983$Date <- as_factor(raw.biomass.1983$Date)
+raw.biomass.1983$Snag <- as_factor(raw.biomass.1983$Snag)
 raw.biomass.2010s$Date <- as_factor(raw.biomass.2010s$Date)
 raw.biomass.2010s$Snag <- as_factor(raw.biomass.2010s$Snag)
 ```
@@ -70,39 +70,42 @@ raw.biomass.2010s$Snag <- as_factor(raw.biomass.2010s$Snag)
 ## Create date-by-taxa matrices for biomass values
 # 1982 raw biomass by taxa matrix
 OGC.biomass.1982 <- dcast(
-	raw.biomass.1982, Date ~ Genus, sum, value.var = "Biomass_Estimate"
-	)
+  raw.biomass.1982, Date ~ Genus, sum,
+  value.var = "Biomass_Estimate"
+)
 # 1983 raw biomass by taxa matrix
 OGC.biomass.1983 <- dcast(
-	raw.biomass.1983, Date ~ Genus, sum, value.var = "Biomass_Estimate"
-	)
+  raw.biomass.1983, Date ~ Genus, sum,
+  value.var = "Biomass_Estimate"
+)
 # 2010s raw biomass by taxa matrix
 OGC.biomass.2010s <- dcast(
-	raw.biomass.2010s, Date ~ Genus, sum, value.var = "Biomass_Estimate"
-	)
+  raw.biomass.2010s, Date ~ Genus, sum,
+  value.var = "Biomass_Estimate"
+)
 
 ## Create dataframe of biomass values for each dataset
-OGC.biomass.1982.values  <- tibble(OGC.biomass.1982[, 2:59])
-OGC.biomass.1983.values  <- tibble(OGC.biomass.1983[, 2:48])
+OGC.biomass.1982.values <- tibble(OGC.biomass.1982[, 2:59])
+OGC.biomass.1983.values <- tibble(OGC.biomass.1983[, 2:48])
 OGC.biomass.2010s.values <- tibble(OGC.biomass.2010s[, 2:64])
 
 ## Average by number of snags
-OGC.biomass.1982.snag.correction      <- OGC.biomass.1982.values/20
+OGC.biomass.1982.snag.correction <- OGC.biomass.1982.values / 20
 # Correct for 19 snags instead of 20 in first sample
-OGC.biomass.1982.snag.correction[1, ] <- ((OGC.biomass.1982.snag.correction[1, ] * 20)/19)
-OGC.biomass.1983.snag.correction      <- OGC.biomass.1983.values/10
-OGC.biomass.2010s.snag.correction     <- OGC.biomass.2010s.values/10
+OGC.biomass.1982.snag.correction[1, ] <- ((OGC.biomass.1982.snag.correction[1, ] * 20) / 19)
+OGC.biomass.1983.snag.correction <- OGC.biomass.1983.values / 10
+OGC.biomass.2010s.snag.correction <- OGC.biomass.2010s.values / 10
 
 ## Add Date to the biomass data
-OGC.biomass.1982.final  <- OGC.biomass.1982.snag.correction %>%
-	add_column(OGC.biomass.1982$Date) %>%
-	rename(UID = "OGC.biomass.1982$Date")
-OGC.biomass.1983.final  <- OGC.biomass.1983.snag.correction %>%
-	add_column(OGC.biomass.1983$Date) %>%
-	rename(UID = "OGC.biomass.1983$Date")
+OGC.biomass.1982.final <- OGC.biomass.1982.snag.correction %>%
+  add_column(OGC.biomass.1982$Date) %>%
+  rename(UID = "OGC.biomass.1982$Date")
+OGC.biomass.1983.final <- OGC.biomass.1983.snag.correction %>%
+  add_column(OGC.biomass.1983$Date) %>%
+  rename(UID = "OGC.biomass.1983$Date")
 OGC.biomass.2010s.final <- OGC.biomass.2010s.snag.correction %>%
-	add_column(OGC.biomass.2010s$Date) %>%
-	rename(UID = "OGC.biomass.2010s$Date")
+  add_column(OGC.biomass.2010s$Date) %>%
+  rename(UID = "OGC.biomass.2010s$Date")
 
 ## Export biomass data files
 write_csv(OGC.biomass.1982.final, file = "data/OGC_1982_biomass_by_taxa.csv")
@@ -118,39 +121,42 @@ write_csv(OGC.biomass.2010s.final, file = "data/OGC_2010s_biomass_by_taxa.csv")
 ## Create date-by-taxa matrices for density values
 # 1982 density by taxa matrix
 OGC.density.1982 <- dcast(
-	raw.biomass.1982, Date ~ Genus, sum, value.var = "Density"
-	)
+  raw.biomass.1982, Date ~ Genus, sum,
+  value.var = "Density"
+)
 # 1983 density by taxa matrix
 OGC.density.1983 <- dcast(
-	raw.biomass.1983, Date ~ Genus, sum, value.var = "Density"
-	)
+  raw.biomass.1983, Date ~ Genus, sum,
+  value.var = "Density"
+)
 # 2010s density by taxa matrix
 OGC.density.2010s <- dcast(
-	raw.biomass.2010s, Date ~ Genus, sum, value.var = "Density"
-	)
+  raw.biomass.2010s, Date ~ Genus, sum,
+  value.var = "Density"
+)
 
 ## Create dataframe of density values for each dataset
-OGC.density.1982.values  <- OGC.density.1982[, 2:59]
-OGC.density.1983.values  <- OGC.density.1983[, 2:48]
+OGC.density.1982.values <- OGC.density.1982[, 2:59]
+OGC.density.1983.values <- OGC.density.1983[, 2:48]
 OGC.density.2010s.values <- OGC.density.2010s[, 2:64]
 
 ## Average by number of snags
-OGC.density.1982.snag.correction      <- OGC.density.1982.values/20
+OGC.density.1982.snag.correction <- OGC.density.1982.values / 20
 # Correct for 19 snags instead of 20 in first sample
-OGC.density.1982.snag.correction[1, ] <-((OGC.density.1982.snag.correction[1, ] * 20)/19)
-OGC.density.1983.snag.correction      <- OGC.density.1983.values/10
-OGC.density.2010s.snag.correction     <- OGC.density.2010s.values/10
+OGC.density.1982.snag.correction[1, ] <- ((OGC.density.1982.snag.correction[1, ] * 20) / 19)
+OGC.density.1983.snag.correction <- OGC.density.1983.values / 10
+OGC.density.2010s.snag.correction <- OGC.density.2010s.values / 10
 
 ## Add UID to density values
-OGC.density.1982.final  <- OGC.density.1982.snag.correction %>%
-	add_column(OGC.density.1982$Date) %>%
-	rename(UID = "OGC.density.1982$Date")
-OGC.density.1983.final  <- OGC.density.1983.snag.correction %>%
-	add_column(OGC.density.1983$Date) %>%
-	rename(UID = "OGC.density.1983$Date")
+OGC.density.1982.final <- OGC.density.1982.snag.correction %>%
+  add_column(OGC.density.1982$Date) %>%
+  rename(UID = "OGC.density.1982$Date")
+OGC.density.1983.final <- OGC.density.1983.snag.correction %>%
+  add_column(OGC.density.1983$Date) %>%
+  rename(UID = "OGC.density.1983$Date")
 OGC.density.2010s.final <- OGC.density.2010s.snag.correction %>%
-	add_column(OGC.density.2010s$Date) %>%
-	rename(UID = "OGC.density.2010s$Date")
+  add_column(OGC.density.2010s$Date) %>%
+  rename(UID = "OGC.density.2010s$Date")
 
 ## Export density data files
 write_csv(OGC.density.1982.final, file = "data/OGC_1982_density_by_taxa.csv")
@@ -170,20 +176,20 @@ density.data <- read_csv("data/OGC_final_density_data.csv", show_col_types = FAL
 
 ## Set variables as factors
 # Biomass data
-biomass.data$UID            <- as_factor(biomass.data$UID)
-biomass.data$Year           <- as_factor(biomass.data$Year)
-biomass.data$Year_Recoded   <- as_factor(biomass.data$Year_Recoded)
-biomass.data$Season         <- as_factor(biomass.data$Season)
+biomass.data$UID <- as_factor(biomass.data$UID)
+biomass.data$Year <- as_factor(biomass.data$Year)
+biomass.data$Year_Recoded <- as_factor(biomass.data$Year_Recoded)
+biomass.data$Season <- as_factor(biomass.data$Season)
 biomass.data$Season_Recoded <- as_factor(biomass.data$Season_Recoded)
-biomass.data$Period         <- as_factor(biomass.data$Period)
+biomass.data$Period <- as_factor(biomass.data$Period)
 
 # Density data
-density.data$UID            <- as_factor(density.data$UID)
-density.data$Year           <- as_factor(density.data$Year)
-density.data$Year_Recoded   <- as_factor(density.data$Year_Recoded)
-density.data$Season         <- as_factor(density.data$Season)
+density.data$UID <- as_factor(density.data$UID)
+density.data$Year <- as_factor(density.data$Year)
+density.data$Year_Recoded <- as_factor(density.data$Year_Recoded)
+density.data$Season <- as_factor(density.data$Season)
 density.data$Season_Recoded <- as_factor(density.data$Season_Recoded)
-density.data$Period         <- as_factor(density.data$Period)
+density.data$Period <- as_factor(density.data$Period)
 
 ## Dataframe of sampling info
 sampling.info <- biomass.data[, 1:6]
@@ -215,8 +221,9 @@ Biomass and density were compared by sampling period, season, and the interactio
 
 ```{r Biomass ANOVA, echo = TRUE}
 biomass.anova <- lm(
-	log(Summed_Biomass) ~ Period * Season, data = biomass.data
-	)
+  log(Summed_Biomass) ~ Period * Season,
+  data = biomass.data
+)
 ```
 
 \vspace{10pt}
@@ -229,13 +236,13 @@ check_model(biomass.anova)
 
 ```{r Biomass ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(biomass.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for biomass by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(biomass.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for biomass by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -243,22 +250,22 @@ kable(
 ```{r Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 biomass.anova.eta.squared <- eta_squared(
-	Anova(biomass.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(biomass.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Biomass ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	biomass.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  biomass.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the biomass ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -267,109 +274,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 biomass.anova.emmeans.period <- emmeans(
-	biomass.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  biomass.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 biomass.anova.emmeans.season <- emmeans(
-	biomass.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  biomass.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 biomass.anova.emmeans.period.season <- emmeans(
-	biomass.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  biomass.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period): Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(biomass.anova.emmeans.period$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period in the biomass ANOVA.",
-	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(biomass.anova.emmeans.period$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period in the biomass ANOVA.",
+  col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(biomass.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the biomass ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(biomass.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the biomass ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period): Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(biomass.anova.emmeans.period$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Contrasts by period in the biomass ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(biomass.anova.emmeans.period$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Contrasts by period in the biomass ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(biomass.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Contrasts by season in the biomass ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(biomass.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Contrasts by season in the biomass ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period): Biomass ANOVA, echo = FALSE}
 kable(
-	eff_size(biomass.anova.emmeans.period,
-					 sigma = sigma(biomass.anova),
-					 edf = df.residual(biomass.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the constrasts by period in the biomass ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(biomass.anova.emmeans.period,
+    sigma = sigma(biomass.anova),
+    edf = df.residual(biomass.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the constrasts by period in the biomass ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Biomass ANOVA, echo = FALSE}
 kable(
-	eff_size(biomass.anova.emmeans.season,
-					 sigma = sigma(biomass.anova),
-					 edf = df.residual(biomass.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the constrasts by season in the biomass ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(biomass.anova.emmeans.season,
+    sigma = sigma(biomass.anova),
+    edf = df.residual(biomass.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the constrasts by season in the biomass ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -378,8 +387,9 @@ kable(
 
 ```{r Density ANOVA, echo = TRUE}
 density.anova <- lm(
-	log(Summed_Density) ~ Period * Season, data = density.data
-	)
+  log(Summed_Density) ~ Period * Season,
+  data = density.data
+)
 ```
 
 \vspace{10pt}
@@ -392,13 +402,13 @@ check_model(density.anova)
 
 ```{r Density ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(density.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA result for density by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(density.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA result for density by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -406,22 +416,22 @@ kable(
 ```{r Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 density.anova.eta.squared <- eta_squared(
-	Anova(density.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(density.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Density ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	density.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  density.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the density ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -430,109 +440,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 density.anova.emmeans.period <- emmeans(
-	density.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  density.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 density.anova.emmeans.season <- emmeans(
-	density.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  density.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 density.anova.emmeans.period.season <- emmeans(
-	density.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  density.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Density ANOVA, echo = FALSE}
 kable(
-	tidy(density.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means of season in the density ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(density.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means of season in the density ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period x Season): Density ANOVA, echo = FALSE}
 kable(
-	tidy(density.anova.emmeans.period.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means of period and season in the density ANOVA.",
-	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(density.anova.emmeans.period.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means of period and season in the density ANOVA.",
+  col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Density ANOVA, echo = FALSE}
 kable(
-	tidy(density.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts between season in the density ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(density.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts between season in the density ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period x Season): Density ANOVA, echo = FALSE}
 kable(
-	tidy(density.anova.emmeans.period.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts between period and season in the density ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(density.anova.emmeans.period.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts between period and season in the density ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Density ANOVA, echo = FALSE}
 kable(
-	eff_size(density.anova.emmeans.season,
-					 sigma = sigma(density.anova),
-					 edf = df.residual(density.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the density ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(density.anova.emmeans.season,
+    sigma = sigma(density.anova),
+    edf = df.residual(density.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the density ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period x Season): Density ANOVA, echo = FALSE}
 kable(
-	eff_size(density.anova.emmeans.period.season,
-					 sigma = sigma(density.anova),
-					 edf = df.residual(density.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period and season in the density ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(density.anova.emmeans.period.season,
+    sigma = sigma(density.anova),
+    edf = df.residual(density.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period and season in the density ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -547,28 +559,28 @@ Biomass and density values were subset and summed for consumer and predator taxa
 ## Subset data to only include consumer taxa
 # Biomass
 consumer.biomass <- invertebrate.biomass.matrix[, 1:46] %>%
-	rowSums()
+  rowSums()
 consumer.biomass.data <- tibble(sampling.info, consumer.biomass) %>%
-	rename(Summed_Biomass = consumer.biomass)
+  rename(Summed_Biomass = consumer.biomass)
 
 # Density
 consumer.density <- invertebrate.density.matrix[, 1:46] %>%
-	rowSums()
+  rowSums()
 consumer.density.data <- tibble(sampling.info, consumer.density) %>%
-	rename(Summed_Density = consumer.density)
+  rename(Summed_Density = consumer.density)
 
 ## Subset data to only include predator taxa
 # Biomass
 predator.biomass <- invertebrate.biomass.matrix[, 47:72] %>%
-	rowSums()
+  rowSums()
 predator.biomass.data <- tibble(sampling.info, predator.biomass) %>%
-	rename(Summed_Biomass = predator.biomass)
+  rename(Summed_Biomass = predator.biomass)
 
 # Density
 predator.density <- invertebrate.density.matrix[, 47:72] %>%
-	rowSums()
+  rowSums()
 predator.density.data <- tibble(sampling.info, predator.density) %>%
-	rename(Summed_Density = predator.density)
+  rename(Summed_Density = predator.density)
 ```
 
 
@@ -581,8 +593,9 @@ predator.density.data <- tibble(sampling.info, predator.density) %>%
 
 ```{r Consumer Biomass ANOVA, echo = TRUE}
 consumer.biomass.anova <- lm(
-	consumer.biomass ~ Period * Season, data = consumer.biomass.data
-	)
+  consumer.biomass ~ Period * Season,
+  data = consumer.biomass.data
+)
 ```
 
 \vspace{10pt}
@@ -595,13 +608,13 @@ check_model(consumer.biomass.anova)
 
 ```{r Consumer Biomass ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(consumer.biomass.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for consumer biomass by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(consumer.biomass.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for consumer biomass by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -609,22 +622,22 @@ kable(
 ```{r Consumer Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 consumer.biomass.anova.eta.squared <- eta_squared(
-	Anova(consumer.biomass.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(consumer.biomass.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Biomass ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	consumer.biomass.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the consumer biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.biomass.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the consumer biomass ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -633,109 +646,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 consumer.biomass.anova.emmeans.period <- emmeans(
-	consumer.biomass.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.biomass.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 consumer.biomass.anova.emmeans.season <- emmeans(
-	consumer.biomass.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.biomass.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 consumer.biomass.anova.emmeans.period.season <- emmeans(
-	consumer.biomass.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.biomass.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.biomass.anova.emmeans.period$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period in the consumer biomass ANOVA.",
-	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(consumer.biomass.anova.emmeans.period$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period in the consumer biomass ANOVA.",
+  col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.biomass.anova.emmeans.period.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period and season in the consumer biomass ANOVA.",
-	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(consumer.biomass.anova.emmeans.period.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period and season in the consumer biomass ANOVA.",
+  col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.biomass.anova.emmeans.period$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by period in the consumer biomass ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(consumer.biomass.anova.emmeans.period$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by period in the consumer biomass ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.biomass.anova.emmeans.period.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by period and season in the consumer biomass ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(consumer.biomass.anova.emmeans.period.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by period and season in the consumer biomass ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	eff_size(consumer.biomass.anova.emmeans.period,
-					 sigma = sigma(consumer.biomass.anova),
-					 edf = df.residual(consumer.biomass.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period in the consumer biomass ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(consumer.biomass.anova.emmeans.period,
+    sigma = sigma(consumer.biomass.anova),
+    edf = df.residual(consumer.biomass.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period in the consumer biomass ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period x Season): Consumer Biomass ANOVA, echo = FALSE}
 kable(
-	eff_size(consumer.biomass.anova.emmeans.period.season,
-					 sigma = sigma(consumer.biomass.anova),
-					 edf = df.residual(consumer.biomass.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period and seasonin the consumer biomass ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(consumer.biomass.anova.emmeans.period.season,
+    sigma = sigma(consumer.biomass.anova),
+    edf = df.residual(consumer.biomass.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period and seasonin the consumer biomass ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -744,8 +759,9 @@ kable(
 
 ```{r Consumer Density ANOVA, echo = TRUE}
 consumer.density.anova <- lm(
-	log(consumer.density) ~ Period * Season, data = consumer.density.data
-	)
+  log(consumer.density) ~ Period * Season,
+  data = consumer.density.data
+)
 ```
 
 \vspace{10pt}
@@ -758,13 +774,13 @@ check_model(consumer.density.anova)
 
 ```{r Consumer Density ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(consumer.density.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for consumer density by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(consumer.density.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for consumer density by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -772,22 +788,22 @@ kable(
 ```{r Consumer Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 consumer.density.anova.eta.squared <- eta_squared(
-	Anova(consumer.density.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(consumer.density.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Density ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	consumer.density.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the consumer density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.density.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the consumer density ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -796,109 +812,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 consumer.density.anova.emmeans.period <- emmeans(
-	consumer.density.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.density.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 consumer.density.anova.emmeans.season <- emmeans(
-	consumer.density.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.density.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 consumer.density.anova.emmeans.period.season <- emmeans(
-	consumer.density.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  consumer.density.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.density.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the consumer density ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(consumer.density.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the consumer density ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period x Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.density.anova.emmeans.period.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period and season in the consumer density ANOVA.",
-	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(consumer.density.anova.emmeans.period.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period and season in the consumer density ANOVA.",
+  col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.density.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the consumer density ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(consumer.density.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the consumer density ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period x Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	tidy(consumer.density.anova.emmeans.period.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by period and season in the consumer density ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(consumer.density.anova.emmeans.period.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by period and season in the consumer density ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	eff_size(consumer.density.anova.emmeans.season,
-					 sigma = sigma(consumer.density.anova),
-					 edf = df.residual(consumer.density.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the consumer density ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(consumer.density.anova.emmeans.season,
+    sigma = sigma(consumer.density.anova),
+    edf = df.residual(consumer.density.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the consumer density ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period x Season): Consumer Density ANOVA, echo = FALSE}
 kable(
-	eff_size(consumer.density.anova.emmeans.period.season,
-					 sigma = sigma(consumer.density.anova),
-					 edf = df.residual(consumer.density.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period and season in the consumer density ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(consumer.density.anova.emmeans.period.season,
+    sigma = sigma(consumer.density.anova),
+    edf = df.residual(consumer.density.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period and season in the consumer density ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -909,8 +927,9 @@ kable(
 
 ```{r Predator Biomass ANOVA, echo = TRUE}
 predator.biomass.anova <- lm(
-	log(predator.biomass) ~ Period * Season, data = predator.biomass.data
-	)
+  log(predator.biomass) ~ Period * Season,
+  data = predator.biomass.data
+)
 ```
 
 \vspace{10pt}
@@ -923,13 +942,13 @@ check_model(predator.biomass.anova)
 
 ```{r Predator Biomass ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(predator.biomass.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for predator biomass by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(predator.biomass.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for predator biomass by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -937,22 +956,22 @@ kable(
 ```{r Predator Biomass ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the biomass ANOVA
 predator.biomass.anova.eta.squared <- eta_squared(
-	Anova(predator.biomass.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(predator.biomass.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Predator Biomass ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	predator.biomass.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the predator biomass ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.biomass.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the predator biomass ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -961,68 +980,69 @@ kable(
 ## Calculate estimated marginal means
 # Period
 predator.biomass.anova.emmeans.period <- emmeans(
-	predator.biomass.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.biomass.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 predator.biomass.anova.emmeans.season <- emmeans(
-	predator.biomass.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.biomass.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 predator.biomass.anova.emmeans.period.season <- emmeans(
-	predator.biomass.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.biomass.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Predator Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(predator.biomass.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means of season in the predator biomass ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(predator.biomass.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means of season in the predator biomass ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Predator Biomass ANOVA, echo = FALSE}
 kable(
-	tidy(predator.biomass.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the predator biomass ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(predator.biomass.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the predator biomass ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Predator Biomass ANOVA, echo = FALSE}
 kable(
-	eff_size(predator.biomass.anova.emmeans.season,
-					 sigma = sigma(predator.biomass.anova),
-					 edf = df.residual(predator.biomass.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the predator biomass ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(predator.biomass.anova.emmeans.season,
+    sigma = sigma(predator.biomass.anova),
+    edf = df.residual(predator.biomass.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the predator biomass ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -1031,8 +1051,9 @@ kable(
 
 ```{r Predator Density ANOVA, echo = TRUE}
 predator.density.anova <- lm(
-	log(predator.density) ~ Period * Season, data = predator.density.data
-	)
+  log(predator.density) ~ Period * Season,
+  data = predator.density.data
+)
 ```
 
 \vspace{10pt}
@@ -1045,13 +1066,13 @@ check_model(predator.density.anova)
 
 ```{r Predator Density ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(predator.density.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for predator density by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(predator.density.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for predator density by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -1059,22 +1080,22 @@ kable(
 ```{r Predator Density ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the density ANOVA
 predator.density.anova.eta.squared <- eta_squared(
-	Anova(predator.density.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(predator.density.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Predator Density ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	predator.density.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the predator density ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.density.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the predator density ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -1083,68 +1104,69 @@ kable(
 ## Calculate estimated marginal means
 # Period
 predator.density.anova.emmeans.period <- emmeans(
-	predator.density.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.density.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 predator.density.anova.emmeans.season <- emmeans(
-	predator.density.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.density.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 predator.density.anova.emmeans.period.season <- emmeans(
-	predator.density.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  predator.density.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period): Predator Density ANOVA, echo = FALSE}
 kable(
-	tidy(predator.density.anova.emmeans.period$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means of period in the predator density ANOVA.",
-	col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(predator.density.anova.emmeans.period$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means of period in the predator density ANOVA.",
+  col.names = c("Period", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period): Predator Density ANOVA, echo = FALSE}
 kable(
-	tidy(predator.density.anova.emmeans.period$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts between period in the predator density ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(predator.density.anova.emmeans.period$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts between period in the predator density ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period): Predator Density ANOVA, echo = FALSE}
 kable(
-	eff_size(predator.density.anova.emmeans.period,
-					 sigma = sigma(predator.density.anova),
-					 edf = df.residual(predator.density.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period in the predator density ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(predator.density.anova.emmeans.period,
+    sigma = sigma(predator.density.anova),
+    edf = df.residual(predator.density.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period in the predator density ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -1161,28 +1183,28 @@ Body sizes were plotted to estimate size groupings. For each taxon, we calculate
 # Consumers
 consumer.summed.biomass <- colSums(invertebrate.biomass.matrix[, 1:46])
 consumer.summed.density <- colSums(invertebrate.density.matrix[, 1:46])
-consumer.size.estimates <- consumer.summed.biomass/consumer.summed.density
-consumer.size.data      <- tibble(
-	consumer.summed.biomass, consumer.summed.density, consumer.size.estimates
-	)
+consumer.size.estimates <- consumer.summed.biomass / consumer.summed.density
+consumer.size.data <- tibble(
+  consumer.summed.biomass, consumer.summed.density, consumer.size.estimates
+)
 
 # Predators
 predator.summed.biomass <- colSums(invertebrate.biomass.matrix[, 47:72])
 predator.summed.density <- colSums(invertebrate.density.matrix[, 47:72])
-predator.size.estimates <- predator.summed.biomass/predator.summed.density
-predator.size.data      <- tibble(
-	predator.summed.biomass, predator.summed.density, predator.size.estimates
-	)
+predator.size.estimates <- predator.summed.biomass / predator.summed.density
+predator.size.data <- tibble(
+  predator.summed.biomass, predator.summed.density, predator.size.estimates
+)
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Size Estimate Plot, echo = FALSE}
 qplot(
-	x = consumer.size.estimates,
-	y = log(consumer.summed.density),
-	xlab = "Consumer Size Estimate (mm)",
-	ylab = "Summed Consumer Density (ln-transformed)"
+  x = consumer.size.estimates,
+  y = log(consumer.summed.density),
+  xlab = "Consumer Size Estimate (mm)",
+  ylab = "Summed Consumer Density (ln-transformed)"
 )
 ```
 
@@ -1190,10 +1212,10 @@ qplot(
 
 ```{r Predator Size Estimate Plot, echo = FALSE}
 qplot(
-	x = predator.size.estimates,
-	y = log(predator.summed.density),
-	xlab = "Predator Size Estimate (mm)",
-	ylab = "Summed Predator Density (ln-transformed)"
+  x = predator.size.estimates,
+  y = log(predator.summed.density),
+  xlab = "Predator Size Estimate (mm)",
+  ylab = "Summed Predator Density (ln-transformed)"
 )
 ```
 
@@ -1203,16 +1225,16 @@ qplot(
 ## Divide groups up by size as per plot groupings
 # Consumers
 consumer.size.groups <- cut(
-	consumer.size.data$consumer.size.estimates, c(0, 0.4, 1.0, 12.0, Inf),
-	right = FALSE
-	)
+  consumer.size.data$consumer.size.estimates, c(0, 0.4, 1.0, 12.0, Inf),
+  right = FALSE
+)
 consumer.size.data$size.group <- as.numeric(consumer.size.groups)
 
 # Predators
 predator.size.groups <- cut(
-	predator.size.data$predator.size.estimates, c(0, 5, 15, 30, Inf),
-	right = FALSE
-	)
+  predator.size.data$predator.size.estimates, c(0, 5, 15, 30, Inf),
+  right = FALSE
+)
 predator.size.data$size.group <- as.numeric(predator.size.groups)
 ```
 
@@ -1237,9 +1259,9 @@ Consumer taxa within each size grouping:
 ## Consumer data management
 # 1980s
 consumer.biomass.1980s <- biomass.data %>%
-	filter(Period == "1980") %>%
-	select(Amphinemura:Tricorythodes) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  filter(Period == "1980") %>%
+  select(Amphinemura:Tricorythodes) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 1980s consumers
 consumer.biomass.1980s.total.biomass <- sum(consumer.biomass.1980s$Summed_Biomass)
@@ -1247,9 +1269,9 @@ consumer.biomass.1980s.total.biomass <- sum(consumer.biomass.1980s$Summed_Biomas
 
 # 2010s
 consumer.biomass.2010s <- biomass.data %>%
-	filter(Period == "2010") %>%
-	select(Amphinemura:Tricorythodes) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  filter(Period == "2010") %>%
+  select(Amphinemura:Tricorythodes) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 2010s consumers
 consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$Summed_Biomass)
@@ -1261,14 +1283,16 @@ consumer.biomass.2010s.total.biomass <- sum(consumer.biomass.2010s$Summed_Biomas
 ```{r Consumers: 1980s Group 1 Biomass, echo = TRUE}
 ## 1980s consumers group 1 taxa
 group.1.consumer.biomass.1980s <- consumer.biomass.1980s %>%
-	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
-				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
-				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
-				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
-				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
-				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
-				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(
+    Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
+    Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+    Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+    Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
+    Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+    Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+    Tipulidae, Triaenodes, Trichoptera, Tricorythodes
+  ) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 1 total biomass
 group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.1980s$Summed_Biomass)
@@ -1280,8 +1304,8 @@ group.1.consumer.biomass.1980s.total.biomass <- sum(group.1.consumer.biomass.198
 ```{r Consumers: 1980s Group 2 Biomass, echo = TRUE}
 ## 1980s consumers group 2 taxa
 group.2.consumer.biomass.1980s <- consumer.biomass.1980s %>%
-	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 2 total biomass
 group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.1980s$Summed_Biomass)
@@ -1293,8 +1317,8 @@ group.2.consumer.biomass.1980s.total.biomass <- sum(group.2.consumer.biomass.198
 ```{r Consumers: 1980s Group 3 Biomass, echo = TRUE}
 ## 1980s consumers group 3 taxa
 group.3.consumer.biomass.1980s <- consumer.biomass.1980s %>%
-	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s consumers group 3 total biomass
 group.3.consumer.biomass.1980s.total.biomass <- sum(group.3.consumer.biomass.1980s$Summed_Biomass)
@@ -1306,14 +1330,16 @@ group.3.consumer.biomass.1980s.total.biomass <- sum(group.3.consumer.biomass.198
 ```{r Consumers: 2010s Group 1 Biomass, echo = TRUE}
 ## 2010s consumers group 1 taxa
 group.1.consumer.biomass.2010s <- consumer.biomass.2010s %>%
-	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae, 
-				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
-				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
-				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae, 
-				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
-				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
-				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(
+    Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
+    Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+    Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+    Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
+    Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+    Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+    Tipulidae, Triaenodes, Trichoptera, Tricorythodes
+  ) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 1 total biomass
 group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.2010s$Summed_Biomass)
@@ -1325,8 +1351,8 @@ group.1.consumer.biomass.2010s.total.biomass <- sum(group.1.consumer.biomass.201
 ```{r Consumers: 2010s Group 2 Biomass, echo = TRUE}
 ## 2010s consumers group 2 taxa
 group.2.consumer.biomass.2010s <- consumer.biomass.2010s %>%
-	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 2 total biomass
 group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.2010s$Summed_Biomass)
@@ -1338,8 +1364,8 @@ group.2.consumer.biomass.2010s.total.biomass <- sum(group.2.consumer.biomass.201
 ```{r Consumers: 2010s Group 3 Biomass, echo = TRUE}
 ## 2010s consumers group 3 taxa
 group.3.consumer.biomass.2010s <- consumer.biomass.2010s %>%
-	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s consumers group 3 total biomass
 group.3.consumer.biomass.2010s.total.biomass <- sum(group.3.consumer.biomass.2010s$Summed_Biomass)
@@ -1350,19 +1376,19 @@ group.3.consumer.biomass.2010s.total.biomass <- sum(group.3.consumer.biomass.201
 
 ```{r Consumer Biomass Change, echo = TRUE, eval = FALSE}
 ## 1980s Consumers (% of total biomass within sampling period)
-(group.1.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+(group.1.consumer.biomass.1980s.total.biomass / consumer.biomass.1980s.total.biomass) * 100
 # Group 1 = 38.54%
-(group.2.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+(group.2.consumer.biomass.1980s.total.biomass / consumer.biomass.1980s.total.biomass) * 100
 # Group 2 = 57.08%
-(group.3.consumer.biomass.1980s.total.biomass/consumer.biomass.1980s.total.biomass)*100
+(group.3.consumer.biomass.1980s.total.biomass / consumer.biomass.1980s.total.biomass) * 100
 # Group 3 =  4.38%
 
 ## 2010s Consumers
-(group.1.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+(group.1.consumer.biomass.2010s.total.biomass / consumer.biomass.2010s.total.biomass) * 100
 # Group 1 = 38.92%
-(group.2.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+(group.2.consumer.biomass.2010s.total.biomass / consumer.biomass.2010s.total.biomass) * 100
 # Group 2 = 60.37%
-(group.3.consumer.biomass.2010s.total.biomass/consumer.biomass.2010s.total.biomass)*100
+(group.3.consumer.biomass.2010s.total.biomass / consumer.biomass.2010s.total.biomass) * 100
 # Group 3 =  0.71%
 ```
 
@@ -1381,9 +1407,9 @@ Predator taxa within each size grouping:
 ## Predator data management
 # 1980s
 predator.biomass.1980s <- biomass.data %>%
-	filter(Period == "1980") %>%
-	select(Acroneuria:Plecoptera) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  filter(Period == "1980") %>%
+  select(Acroneuria:Plecoptera) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 1980s predators
 predator.biomass.1980s.total.biomass <- sum(predator.biomass.1980s$Summed_Biomass)
@@ -1391,9 +1417,9 @@ predator.biomass.1980s.total.biomass <- sum(predator.biomass.1980s$Summed_Biomas
 
 # 2010s
 predator.biomass.2010s <- biomass.data %>%
-	filter(Period == "2010") %>%
-	select(Acroneuria:Plecoptera) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  filter(Period == "2010") %>%
+  select(Acroneuria:Plecoptera) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 # Sum all biomass for the 2010s predators
 predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$Summed_Biomass)
@@ -1405,10 +1431,12 @@ predator.biomass.2010s.total.biomass <- sum(predator.biomass.2010s$Summed_Biomas
 ```{r Predators: 1980s Group 1 Biomass, echo = TRUE}
 ## 1980s predators group 1 taxa
 group.1.predator.biomass.1980s <- predator.biomass.1980s %>%
-	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
-				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
-				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(
+    Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+    Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+    Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera
+  ) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 1 total biomass
 group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.1980s$Summed_Biomass)
@@ -1420,8 +1448,8 @@ group.1.predator.biomass.1980s.total.biomass <- sum(group.1.predator.biomass.198
 ```{r Predators: 1980s Group 2 Biomass, echo = TRUE}
 ## 1980s predators group 2 taxa
 group.2.predator.biomass.1980s <- predator.biomass.1980s %>%
-	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 2 total biomass
 group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.1980s$Summed_Biomass)
@@ -1433,8 +1461,8 @@ group.2.predator.biomass.1980s.total.biomass <- sum(group.2.predator.biomass.198
 ```{r Predators: 1980s Group 3 Biomass, echo = TRUE}
 ## 1980s predators group 3 taxa
 group.3.predator.biomass.1980s <- predator.biomass.1980s %>%
-	select(Helopicus, Neurocordulia) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Helopicus, Neurocordulia) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 1980s predators group 3 total biomass
 group.3.predator.biomass.1980s.total.biomass <- sum(group.3.predator.biomass.1980s$Summed_Biomass)
@@ -1446,10 +1474,12 @@ group.3.predator.biomass.1980s.total.biomass <- sum(group.3.predator.biomass.198
 ```{r Predators: 2010s Group 1 Biomass, echo = TRUE}
 ## 2010s predators group 1 taxa
 group.1.predator.biomass.2010s <- predator.biomass.2010s %>%
-	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
-				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
-				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(
+    Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+    Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+    Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera
+  ) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 1 total biomass
 group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.2010s$Summed_Biomass)
@@ -1461,8 +1491,8 @@ group.1.predator.biomass.2010s.total.biomass <- sum(group.1.predator.biomass.201
 ```{r Predators: 2010s Group 2 Biomass, echo = TRUE}
 ## 2010s predators group 2 taxa
 group.2.predator.biomass.2010s <- predator.biomass.2010s %>%
-	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 2 total biomass
 group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.2010s$Summed_Biomass)
@@ -1474,8 +1504,8 @@ group.2.predator.biomass.2010s.total.biomass <- sum(group.2.predator.biomass.201
 ```{r Predators: 2010s Group 3 Biomass, echo = TRUE}
 ## 2010s predators group 3 taxa
 group.3.predator.biomass.2010s <- predator.biomass.2010s %>%
-	select(Helopicus, Neurocordulia) %>%
-	mutate(Summed_Biomass = rowSums(.))
+  select(Helopicus, Neurocordulia) %>%
+  mutate(Summed_Biomass = rowSums(.))
 
 ## 2010s predators group 3 total biomass
 group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.2010s$Summed_Biomass)
@@ -1486,25 +1516,25 @@ group.3.predator.biomass.2010s.total.biomass <- sum(group.3.predator.biomass.201
 
 ```{r Predator Biomass Change, echo = TRUE, eval = FALSE}
 ## 1980s Predators (% of total biomass within sampling period)
-(group.1.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+(group.1.predator.biomass.1980s.total.biomass / predator.biomass.1980s.total.biomass) * 100
 # Group 1 = 37.03%
-(group.2.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+(group.2.predator.biomass.1980s.total.biomass / predator.biomass.1980s.total.biomass) * 100
 # Group 2 = 48.75%
-(group.3.predator.biomass.1980s.total.biomass/predator.biomass.1980s.total.biomass)*100
+(group.3.predator.biomass.1980s.total.biomass / predator.biomass.1980s.total.biomass) * 100
 # Group 3 = 14.22%
 
 ## 2010s Predators
-(group.1.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+(group.1.predator.biomass.2010s.total.biomass / predator.biomass.2010s.total.biomass) * 100
 # Group 1 = 38.68%
-(group.2.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+(group.2.predator.biomass.2010s.total.biomass / predator.biomass.2010s.total.biomass) * 100
 # Group 2 = 45.83%
-(group.3.predator.biomass.2010s.total.biomass/predator.biomass.2010s.total.biomass)*100
+(group.3.predator.biomass.2010s.total.biomass / predator.biomass.2010s.total.biomass) * 100
 # Group 3 = 15.49%
 
 ## Divide mean 2010s biomass by mean 1980s biomass
 percent.predator.biomass.change <- (
-	mean(predator.biomass.2010s.total.biomass)/mean(predator.biomass.1980s.total.biomass)
-	)*100
+  mean(predator.biomass.2010s.total.biomass) / mean(predator.biomass.1980s.total.biomass)
+) * 100
 # 2010s biomass = 115.70% of 1980s biomass
 ```
 
@@ -1531,26 +1561,26 @@ Cheumatopsyche.biomass.2010s <- biomass.2010s$Cheumatopsyche
 
 ```{r Biomass Contributions: Dominant Caddisflies, echo = TRUE, eval = FALSE}
 ## Hydropsyche
-(mean(Hydropsyche.biomass.2010s)/mean(Hydropsyche.biomass.1980s))*100
+(mean(Hydropsyche.biomass.2010s) / mean(Hydropsyche.biomass.1980s)) * 100
 # 2010 biomass = 34.31% of 1980s
 
 ## Chimarra
-(mean(Chimarra.biomass.2010s)/mean(Chimarra.biomass.1980s))*100
+(mean(Chimarra.biomass.2010s) / mean(Chimarra.biomass.1980s)) * 100
 # 2010 biomass = 63.02% of 1980s
 
 ## Cheumatopsyche
-(mean(Cheumatopsyche.biomass.2010s)/mean(Cheumatopsyche.biomass.1980s))*100
+(mean(Cheumatopsyche.biomass.2010s) / mean(Cheumatopsyche.biomass.1980s)) * 100
 # 2010 biomass = 14.96% of 1980s
 
 ## Percent of total biomass made up by all 3 dominant caddisflies
 # 1980s
-((mean(Hydropsyche.biomass.1980s) + mean(Chimarra.biomass.1980s) + 
-          mean(Cheumatopsyche.biomass.1980s)) / mean(summed.biomass.1980s))*100
+((mean(Hydropsyche.biomass.1980s) + mean(Chimarra.biomass.1980s) +
+  mean(Cheumatopsyche.biomass.1980s)) / mean(summed.biomass.1980s)) * 100
 # 1980s = 60.80% of all biomass
 
 # 2010s
-((mean(Hydropsyche.biomass.2010s) + mean(Chimarra.biomass.2010s) + 
-          mean(Cheumatopsyche.biomass.2010s)) / mean(summed.biomass.2010s))*100
+((mean(Hydropsyche.biomass.2010s) + mean(Chimarra.biomass.2010s) +
+  mean(Cheumatopsyche.biomass.2010s)) / mean(summed.biomass.2010s)) * 100
 # 2010s = 42.15% of all biomass
 ```
 
@@ -1575,9 +1605,9 @@ Consumer taxa within each size grouping:
 ## Consumer data management
 # 1980s
 consumer.density.1980s <- density.data %>%
-	filter(Period == "1980") %>%
-	select(Amphinemura:Tricorythodes) %>%
-	mutate(summed_density = rowSums(.))
+  filter(Period == "1980") %>%
+  select(Amphinemura:Tricorythodes) %>%
+  mutate(summed_density = rowSums(.))
 
 # Sum all density for the 1980s consumers
 consumer.density.1980s.total.density <- sum(consumer.density.1980s$summed_density)
@@ -1585,9 +1615,9 @@ consumer.density.1980s.total.density <- sum(consumer.density.1980s$summed_densit
 
 # 2010s
 consumer.density.2010s <- density.data %>%
-	filter(Period == "2010") %>%
-	select(Amphinemura:Tricorythodes) %>%
-	mutate(summed_density = rowSums(.))
+  filter(Period == "2010") %>%
+  select(Amphinemura:Tricorythodes) %>%
+  mutate(summed_density = rowSums(.))
 
 # Sum all density for the 2010s consumers
 consumer.density.2010s.total.density <- sum(consumer.density.2010s$summed_density)
@@ -1599,14 +1629,16 @@ consumer.density.2010s.total.density <- sum(consumer.density.2010s$summed_densit
 ```{r Consumers: 1980s Group 1, echo = TRUE}
 ## 1980s consumers group 1 taxa
 group.1.consumer.density.1980s <- consumer.density.1980s %>%
-	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
-				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
-				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
-				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
-				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
-				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
-				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(summed_density = rowSums(.))
+  select(
+    Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
+    Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+    Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+    Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
+    Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+    Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+    Tipulidae, Triaenodes, Trichoptera, Tricorythodes
+  ) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s consumers group 1 total density
 group.1.consumer.density.1980s.total.density <- sum(group.1.consumer.density.1980s$summed_density)
@@ -1618,8 +1650,8 @@ group.1.consumer.density.1980s.total.density <- sum(group.1.consumer.density.198
 ```{r Consumers: 1980s Group 2, echo = TRUE}
 ## 1980s consumers group 2 taxa
 group.2.consumer.density.1980s <- consumer.density.1980s %>%
-	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(summed_density = rowSums(.))
+  select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s consumers group 2 total density
 group.2.consumer.density.1980s.total.density <- sum(group.2.consumer.density.1980s$summed_density)
@@ -1631,8 +1663,8 @@ group.2.consumer.density.1980s.total.density <- sum(group.2.consumer.density.198
 ```{r Consumers: 1980s Group 3, echo = TRUE}
 ## 1980s consumers group 3 taxa
 group.3.consumer.density.1980s <- consumer.density.1980s %>%
-	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(summed_density = rowSums(.))
+  select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s consumers group 3 total density
 group.3.consumer.density.1980s.total.density <- sum(group.3.consumer.density.1980s$summed_density)
@@ -1644,14 +1676,16 @@ group.3.consumer.density.1980s.total.density <- sum(group.3.consumer.density.198
 ```{r Consumers: 2010s Group 1, echo = TRUE}
 ## 2010s consumers group 1 taxa
 group.1.consumer.density.2010s <- consumer.density.2010s %>%
-	select(Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae, 
-				 Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
-				 Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
-				 Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae, 
-				 Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
-				 Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
-				 Tipulidae, Triaenodes, Trichoptera, Tricorythodes) %>%
-	mutate(summed_density = rowSums(.))
+  select(
+    Amphinemura, Ancyronyx, Baetidae, Baetisca, Brachycentrus, Caenidae,
+    Cheumatopsyche, Chironomidae, Crambidae, Cyrnellus, Dubiraphia, Elmidae,
+    Ephemerellidae, Ephemeroptera, Heptageniidae, Hydropsychidae, Isonychia,
+    Isopoda, Lepidoptera, Leptoceridae, Leptophlebiidae, Limnephilidae,
+    Macronychus, Microcylloepus, Nectopsyche, Nemouridae, Neureclipsis,
+    Polycentropodidae, Psephenus, Simuliidae, Stenelmis, Taeniopteryx,
+    Tipulidae, Triaenodes, Trichoptera, Tricorythodes
+  ) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s consumers group 1 total density
 group.1.consumer.density.2010s.total.density <- sum(group.1.consumer.density.2010s$summed_density)
@@ -1663,8 +1697,8 @@ group.1.consumer.density.2010s.total.density <- sum(group.1.consumer.density.201
 ```{r Consumers: 2010s Group 2, echo = TRUE}
 ## 2010s consumers group 2 taxa
 group.2.consumer.density.2010s <- consumer.density.2010s %>%
-	select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
-	mutate(summed_density = rowSums(.))
+  select(Chimarra, Ectopria, Hydropsyche, Macrostemum, Paraponyx, Shipsa) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s consumers group 2 total density
 group.2.consumer.density.2010s.total.density <- sum(group.2.consumer.density.2010s$summed_density)
@@ -1676,8 +1710,8 @@ group.2.consumer.density.2010s.total.density <- sum(group.2.consumer.density.201
 ```{r Consumers: 2010s Group 3, echo = TRUE}
 ## 2010s consumers group 3 taxa
 group.3.consumer.density.2010s <- consumer.density.2010s %>%
-	select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
-	mutate(summed_density = rowSums(.))
+  select(Ironoquia, Neargyractis, Pteronarcys, Pycnopsyche) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s consumers group 3 total density
 group.3.consumer.density.2010s.total.density <- sum(group.3.consumer.density.2010s$summed_density)
@@ -1688,25 +1722,25 @@ group.3.consumer.density.2010s.total.density <- sum(group.3.consumer.density.201
 
 ```{r Consumer Density Change, echo = TRUE, eval = FALSE}
 ## 1980s Consumers (% of total density within sampling period)
-(group.1.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
+(group.1.consumer.density.1980s.total.density / consumer.density.1980s.total.density) * 100
 # Group 1 = 89.22%
-(group.2.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
+(group.2.consumer.density.1980s.total.density / consumer.density.1980s.total.density) * 100
 # Group 2 = 10.74%
-(group.3.consumer.density.1980s.total.density/consumer.density.1980s.total.density)*100
+(group.3.consumer.density.1980s.total.density / consumer.density.1980s.total.density) * 100
 # Group 3 = 0.04%
 
 ## 2010s Consumers
-(group.1.consumer.density.2010s.total.density/consumer.density.2010s.total.density)*100
+(group.1.consumer.density.2010s.total.density / consumer.density.2010s.total.density) * 100
 # Group 1 = 94.73%
-(group.2.consumer.density.2010s.total.density/consumer.density.2010s.total.density)*100
+(group.2.consumer.density.2010s.total.density / consumer.density.2010s.total.density) * 100
 # Group 2 = 5.26%
-(group.3.consumer.density.2010s.total.density/consumer.density.2010s.total.density)*100
+(group.3.consumer.density.2010s.total.density / consumer.density.2010s.total.density) * 100
 # Group 3 = 0.01%
 
 ## Divide mean 2010s density by mean 1980s density
 percent.consumer.density.change <- (
-	mean(consumer.density.2010s.total.density)/mean(consumer.density.1980s.total.density)
-	)*100
+  mean(consumer.density.2010s.total.density) / mean(consumer.density.1980s.total.density)
+) * 100
 # 2010s density = 81.80% of 1980s density
 ```
 
@@ -1725,9 +1759,9 @@ Predator taxa within each size grouping:
 ## Predator data management
 # 1980s
 predator.density.1980s <- density.data %>%
-	filter(Period == "1980") %>%
-	select(Acroneuria:Plecoptera) %>%
-	mutate(summed_density = rowSums(.))
+  filter(Period == "1980") %>%
+  select(Acroneuria:Plecoptera) %>%
+  mutate(summed_density = rowSums(.))
 
 # Sum all biomass for the 1980s predators
 predator.density.1980s.total.density <- sum(predator.density.1980s$summed_density)
@@ -1735,9 +1769,9 @@ predator.density.1980s.total.density <- sum(predator.density.1980s$summed_densit
 
 # 2010s
 predator.density.2010s <- density.data %>%
-	filter(Period == "2010") %>%
-	select(Acroneuria:Plecoptera) %>%
-	mutate(summed_density = rowSums(.))
+  filter(Period == "2010") %>%
+  select(Acroneuria:Plecoptera) %>%
+  mutate(summed_density = rowSums(.))
 
 # Sum all biomass for the 2010s predators
 predator.density.2010s.total.density <- sum(predator.density.2010s$summed_density)
@@ -1749,10 +1783,12 @@ predator.density.2010s.total.density <- sum(predator.density.2010s$summed_densit
 ```{r Predators: 1980s Group 1, echo = TRUE}
 ## 1980s predators group 1 taxa
 group.1.predator.density.1980s <- predator.density.1980s %>%
-	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
-				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
-				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(summed_density = rowSums(.))
+  select(
+    Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+    Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+    Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera
+  ) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s predators group 1 total density
 group.1.predator.density.1980s.total.density <- sum(group.1.predator.density.1980s$summed_density)
@@ -1764,8 +1800,8 @@ group.1.predator.density.1980s.total.density <- sum(group.1.predator.density.198
 ```{r Predators: 1980s Group 2, echo = TRUE}
 ## 1980s predators group 2 taxa
 group.2.predator.density.1980s <- predator.density.1980s %>%
-	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(summed_density = rowSums(.))
+  select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s predators group 2 total density
 group.2.predator.density.1980s.total.density <- sum(group.2.predator.density.1980s$summed_density)
@@ -1777,8 +1813,8 @@ group.2.predator.density.1980s.total.density <- sum(group.2.predator.density.198
 ```{r Predators: 1980s Group 3, echo = TRUE}
 ## 1980s predators group 3 taxa
 group.3.predator.density.1980s <- predator.density.1980s %>%
-	select(Helopicus, Neurocordulia) %>%
-	mutate(summed_density = rowSums(.))
+  select(Helopicus, Neurocordulia) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 1980s predators group 3 total density
 group.3.predator.density.1980s.total.density <- sum(group.3.predator.density.1980s$summed_density)
@@ -1790,10 +1826,12 @@ group.3.predator.density.1980s.total.density <- sum(group.3.predator.density.198
 ```{r Predators: 2010s Group 1, echo = TRUE}
 ## 2010s predators group 1 taxa
 group.1.predator.density.2010s <- predator.density.2010s %>%
-	select(Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
-				 Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
-				 Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera) %>%
-	mutate(summed_density = rowSums(.))
+  select(
+    Acroneuria, Aeshnidae, Amphipoda, Anisoptera, Argia, Ceraclea,
+    Ceratopogoninae, Cernotina, Coenagrionidae, Enallagma, Hemerodromia,
+    Isoperla, Neoperla, Oecetis, Paragnetina, Perlesta, Perlidae, Perlodidae, Plecoptera
+  ) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s predators group 1 total density
 group.1.predator.density.2010s.total.density <- sum(group.1.predator.density.2010s$summed_density)
@@ -1805,8 +1843,8 @@ group.1.predator.density.2010s.total.density <- sum(group.1.predator.density.201
 ```{r Predators: 2010s Group 2, echo = TRUE}
 ## 2010s predators group 2 taxa
 group.2.predator.density.2010s <- predator.density.2010s %>%
-	select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
-	mutate(summed_density = rowSums(.))
+  select(Aeshna, Boyeria, Corydalus, Hydroperla, Nasiaeschna) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s predators group 2 total density
 group.2.predator.density.2010s.total.density <- sum(group.2.predator.density.2010s$summed_density)
@@ -1818,8 +1856,8 @@ group.2.predator.density.2010s.total.density <- sum(group.2.predator.density.201
 ```{r Predators: 2010s Group 3, echo = TRUE}
 ## 2010s predators group 3 taxa
 group.3.predator.density.2010s <- predator.density.2010s %>%
-	select(Helopicus, Neurocordulia) %>%
-	mutate(summed_density = rowSums(.))
+  select(Helopicus, Neurocordulia) %>%
+  mutate(summed_density = rowSums(.))
 
 ## 2010s predators group 3 total density
 group.3.predator.density.2010s.total.density <- sum(group.3.predator.density.2010s$summed_density)
@@ -1830,25 +1868,25 @@ group.3.predator.density.2010s.total.density <- sum(group.3.predator.density.201
 
 ```{r Predator Density Change, echo = TRUE, eval = FALSE}
 ## 1980s Predators (% of total density within sampling period)
-(group.1.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
+(group.1.predator.density.1980s.total.density / predator.density.1980s.total.density) * 100
 # Group 1 = 97.08%
-(group.2.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
+(group.2.predator.density.1980s.total.density / predator.density.1980s.total.density) * 100
 # Group 2 =  2.58%
-(group.3.predator.density.1980s.total.density/predator.density.1980s.total.density)*100
+(group.3.predator.density.1980s.total.density / predator.density.1980s.total.density) * 100
 # Group 3 =  0.33%
 
 ## 2010s Predators
-(group.1.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
+(group.1.predator.density.2010s.total.density / predator.density.2010s.total.density) * 100
 # Group 1 = 96.98%
-(group.2.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
+(group.2.predator.density.2010s.total.density / predator.density.2010s.total.density) * 100
 # Group 2 =  2.75%
-(group.3.predator.density.2010s.total.density/predator.density.2010s.total.density)*100
+(group.3.predator.density.2010s.total.density / predator.density.2010s.total.density) * 100
 # Group 3 =  0.27%
 
 ## Divide mean 2010s density by mean 1980s density
 percent.predator.density.change <- (
-	mean(predator.density.2010s.total.density)/mean(predator.density.1980s.total.density)
-	)*100
+  mean(predator.density.2010s.total.density) / mean(predator.density.1980s.total.density)
+) * 100
 # 2010s density = 186.23% of 1980s density
 ```
 
@@ -1876,17 +1914,17 @@ rownames(consumer.biomass.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 ## Add biomass values by groups for the 1980s and 2010s
 # 1980s
 consumer.biomass.chi.square.data$`1980s` <- c(
-	group.1.consumer.biomass.1980s.total.biomass,
-	group.2.consumer.biomass.1980s.total.biomass,
-	group.3.consumer.biomass.1980s.total.biomass
-	)
+  group.1.consumer.biomass.1980s.total.biomass,
+  group.2.consumer.biomass.1980s.total.biomass,
+  group.3.consumer.biomass.1980s.total.biomass
+)
 
 # 2010s
 consumer.biomass.chi.square.data$`2010s` <- c(
-	group.1.consumer.biomass.2010s.total.biomass,
-	group.2.consumer.biomass.2010s.total.biomass,
-	group.3.consumer.biomass.2010s.total.biomass
-	)
+  group.1.consumer.biomass.2010s.total.biomass,
+  group.2.consumer.biomass.2010s.total.biomass,
+  group.3.consumer.biomass.2010s.total.biomass
+)
 ```
 
 \vspace{10pt}
@@ -1908,51 +1946,51 @@ cramers_v(consumer.biomass.chi.square.data)
 
 ```{r Consumer Biomass Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	consumer.biomass.chi.square.test$observed,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Observed biomass by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.biomass.chi.square.test$observed,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Observed biomass by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Biomass Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	consumer.biomass.chi.square.test$expected,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Expected biomass by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.biomass.chi.square.test$expected,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Expected biomass by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Biomass Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	consumer.biomass.chi.square.test$residuals,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Residual biomass by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.biomass.chi.square.test$residuals,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Residual biomass by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Biomass Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the consumer chi-squared test."}
 corrplot::corrplot(
-	consumer.biomass.chi.square.test$residuals,
-	method = "ellipse",
-	tl.col = "gray0", 
-	addCoef.col = TRUE, 
-	tl.cex = 1.0, 
-	cl.cex = 1.0, 
-	number.cex = 1.5,
-	is.corr = FALSE
-	)
+  consumer.biomass.chi.square.test$residuals,
+  method = "ellipse",
+  tl.col = "gray0",
+  addCoef.col = TRUE,
+  tl.cex = 1.0,
+  cl.cex = 1.0,
+  number.cex = 1.5,
+  is.corr = FALSE
+)
 ```
 
 
@@ -1968,17 +2006,17 @@ rownames(consumer.density.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 ## Add density values by groups for the 1980s and 2010s
 # 1980s
 consumer.density.chi.square.data$`1980s` <- c(
-	group.1.consumer.density.1980s.total.density,
-	group.2.consumer.density.1980s.total.density,
-	group.3.consumer.density.1980s.total.density
-	)
+  group.1.consumer.density.1980s.total.density,
+  group.2.consumer.density.1980s.total.density,
+  group.3.consumer.density.1980s.total.density
+)
 
 # 2010s
 consumer.density.chi.square.data$`2010s` <- c(
-	group.1.consumer.density.2010s.total.density,
-	group.2.consumer.density.2010s.total.density,
-	group.3.consumer.density.2010s.total.density
-	)
+  group.1.consumer.density.2010s.total.density,
+  group.2.consumer.density.2010s.total.density,
+  group.3.consumer.density.2010s.total.density
+)
 ```
 
 \vspace{10pt}
@@ -2000,51 +2038,51 @@ cramers_v(consumer.density.chi.square.data)
 
 ```{r Consumer Density Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	consumer.density.chi.square.test$observed,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Observed density by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.density.chi.square.test$observed,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Observed density by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Density Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	consumer.density.chi.square.test$expected,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Expected density by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.density.chi.square.test$expected,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Expected density by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Density Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	consumer.density.chi.square.test$residuals,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Residual density by size groupings for the consumer chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  consumer.density.chi.square.test$residuals,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Residual density by size groupings for the consumer chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Consumer Density Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the consumer chi-squared test."}
 corrplot::corrplot(
-	consumer.density.chi.square.test$residuals,
-	method = "ellipse",
-	tl.col = "gray0", 
-	addCoef.col = TRUE, 
-	tl.cex = 1.0, 
-	cl.cex = 1.0, 
-	number.cex = 1.5,
-	is.corr = FALSE
-	)
+  consumer.density.chi.square.test$residuals,
+  method = "ellipse",
+  tl.col = "gray0",
+  addCoef.col = TRUE,
+  tl.cex = 1.0,
+  cl.cex = 1.0,
+  number.cex = 1.5,
+  is.corr = FALSE
+)
 ```
 
 
@@ -2060,17 +2098,17 @@ rownames(predator.biomass.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 ## Add biomass values by groups for the 1980s and 2010s
 # 1980s
 predator.biomass.chi.square.data$`1980s` <- c(
-	group.1.predator.biomass.1980s.total.biomass,
-	group.2.predator.biomass.1980s.total.biomass,
-	group.3.predator.biomass.1980s.total.biomass
-	)
+  group.1.predator.biomass.1980s.total.biomass,
+  group.2.predator.biomass.1980s.total.biomass,
+  group.3.predator.biomass.1980s.total.biomass
+)
 
 # 2010s
 predator.biomass.chi.square.data$`2010s` <- c(
-	group.1.predator.biomass.2010s.total.biomass,
-	group.2.predator.biomass.2010s.total.biomass,
-	group.3.predator.biomass.2010s.total.biomass
-	)
+  group.1.predator.biomass.2010s.total.biomass,
+  group.2.predator.biomass.2010s.total.biomass,
+  group.3.predator.biomass.2010s.total.biomass
+)
 ```
 
 \vspace{10pt}
@@ -2092,49 +2130,49 @@ cramers_v(predator.biomass.chi.square.data)
 
 ```{r Predator Biomass Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	predator.biomass.chi.square.test$observed,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Observed biomass by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.biomass.chi.square.test$observed,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Observed biomass by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Predator Biomass Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	predator.biomass.chi.square.test$expected,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Expected biomass by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.biomass.chi.square.test$expected,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Expected biomass by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Predator Biomass Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	predator.biomass.chi.square.test$residuals,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Residual biomass by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.biomass.chi.square.test$residuals,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Residual biomass by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 ```{r Predator Biomass Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the predator chi-squared test."}
 corrplot::corrplot(
-	predator.biomass.chi.square.test$residuals,
-	method = "ellipse",
-	tl.col = "gray0", 
-	addCoef.col = TRUE, 
-	tl.cex = 1.0, 
-	cl.cex = 1.0, 
-	number.cex = 1.5,
-	is.corr = FALSE
-	)
+  predator.biomass.chi.square.test$residuals,
+  method = "ellipse",
+  tl.col = "gray0",
+  addCoef.col = TRUE,
+  tl.cex = 1.0,
+  cl.cex = 1.0,
+  number.cex = 1.5,
+  is.corr = FALSE
+)
 ```
 
 
@@ -2150,17 +2188,17 @@ rownames(predator.density.chi.square.data) <- c("Group_1", "Group_2", "Group_3")
 ## Add density values by groups for the 1980s and 2010s
 # 1980s
 predator.density.chi.square.data$`1980s` <- c(
-	group.1.predator.density.1980s.total.density,
-	group.2.predator.density.1980s.total.density,
-	group.3.predator.density.1980s.total.density
-	)
+  group.1.predator.density.1980s.total.density,
+  group.2.predator.density.1980s.total.density,
+  group.3.predator.density.1980s.total.density
+)
 
 # 2010s
 predator.density.chi.square.data$`2010s` <- c(
-	group.1.predator.density.2010s.total.density,
-	group.2.predator.density.2010s.total.density,
-	group.3.predator.density.2010s.total.density
-	)
+  group.1.predator.density.2010s.total.density,
+  group.2.predator.density.2010s.total.density,
+  group.3.predator.density.2010s.total.density
+)
 ```
 
 \vspace{10pt}
@@ -2182,49 +2220,49 @@ cramers_v(predator.density.chi.square.data)
 
 ```{r Predator Density Chi-Squared Test Table: Observed Values, echo = FALSE}
 kable(
-	predator.density.chi.square.test$observed,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Observed density by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.density.chi.square.test$observed,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Observed density by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Predator Density Chi-Squared Test Table: Expected Values, echo = FALSE}
 kable(
-	predator.density.chi.square.test$expected,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Expected density by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.density.chi.square.test$expected,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Expected density by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Predator Density Chi-Squared Test Table: Residuals, echo = FALSE}
 kable(
-	predator.density.chi.square.test$residuals,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Residual density by size groupings for the predator chi-squared test."
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  predator.density.chi.square.test$residuals,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Residual density by size groupings for the predator chi-squared test."
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 ```{r Predator Density Chi-Squared Test: Residual Figure, echo = FALSE, fig.cap = "Plot of residuals from the predator chi-squared test."}
 corrplot::corrplot(
-	predator.density.chi.square.test$residuals,
-	method = "ellipse",
-	tl.col = "gray0", 
-	addCoef.col = TRUE, 
-	tl.cex = 1.0, 
-	cl.cex = 1.0, 
-	number.cex = 1.5,
-	is.corr = FALSE
-	)
+  predator.density.chi.square.test$residuals,
+  method = "ellipse",
+  tl.col = "gray0",
+  addCoef.col = TRUE,
+  tl.cex = 1.0,
+  cl.cex = 1.0,
+  number.cex = 1.5,
+  is.corr = FALSE
+)
 ```
 
 
@@ -2242,14 +2280,14 @@ Biomass contributions were calculated for consumer and predator groups.
 total.1980s.biomass <- invertebrate.biomass.matrix[1:25, ]
 total.1980s.mean.biomass <- t(colMeans(total.1980s.biomass))
 total.1980s.percent.biomass.contribution <- (
-	(total.1980s.mean.biomass/total.1980s.biomass)*100
+  (total.1980s.mean.biomass / total.1980s.biomass) * 100
 )
 
 # 2010s
 total.2010s.biomass <- invertebrate.biomass.matrix[1:25, ]
 total.2010s.mean.biomass <- t(colMeans(total.2010s.biomass))
 total.2010s.percent.biomass.contribution <- (
-	(total.2010s.mean.biomass/total.2010s.biomass)*100
+  (total.2010s.mean.biomass / total.2010s.biomass) * 100
 )
 ```
 
@@ -2261,20 +2299,20 @@ total.2010s.percent.biomass.contribution <- (
 ## Separate consumer biomass data by sampling period
 # 1980s
 consumer.1980s.biomass <- invertebrate.biomass.matrix %>%
-	select(Amphinemura:Tricorythodes) %>%
-	slice(1:25)
+  select(Amphinemura:Tricorythodes) %>%
+  slice(1:25)
 consumer.1980s.mean.biomass <- t(colMeans(consumer.1980s.biomass))
 consumer.1980s.biomass.contribution <- (
-	(consumer.1980s.mean.biomass/consumer.1980s.biomass)*100
+  (consumer.1980s.mean.biomass / consumer.1980s.biomass) * 100
 )
 
 # 2010s
 consumer.2010s.biomass <- invertebrate.biomass.matrix %>%
-	select(Amphinemura:Tricorythodes) %>%
-	slice(26:49)
+  select(Amphinemura:Tricorythodes) %>%
+  slice(26:49)
 consumer.2010s.mean.biomass <- t(colMeans(consumer.2010s.biomass))
 consumer.2010s.biomass.contribution <- (
-	(consumer.2010s.mean.biomass/consumer.2010s.biomass)*100
+  (consumer.2010s.mean.biomass / consumer.2010s.biomass) * 100
 )
 ```
 
@@ -2286,20 +2324,20 @@ consumer.2010s.biomass.contribution <- (
 ## Separate predator biomass data by sampling period
 # 1980s
 predator.1980s.biomass <- invertebrate.biomass.matrix %>%
-	select(Acroneuria:Plecoptera) %>%
-	slice(1:25)
+  select(Acroneuria:Plecoptera) %>%
+  slice(1:25)
 predator.1980s.mean.biomass <- t(colMeans(predator.1980s.biomass))
 predator.1980s.biomass.contribution <- (
-	(predator.1980s.mean.biomass/predator.1980s.biomass)*100
+  (predator.1980s.mean.biomass / predator.1980s.biomass) * 100
 )
 
 # 2010s
-predator.2010s.biomass     <- invertebrate.biomass.matrix %>%
-	select(Acroneuria:Plecoptera) %>%
-	slice(26:49)
+predator.2010s.biomass <- invertebrate.biomass.matrix %>%
+  select(Acroneuria:Plecoptera) %>%
+  slice(26:49)
 predator.2010s.mean.biomass <- t(colMeans(predator.2010s.biomass))
 predator.2010s.biomass.contribution <- (
-	(predator.2010s.mean.biomass/predator.2010s.biomass)*100
+  (predator.2010s.mean.biomass / predator.2010s.biomass) * 100
 )
 ```
 
@@ -2321,44 +2359,45 @@ We tested whether mean body sizes of the most dominant primary consumers and pre
 ## Data management for body size t-tests
 
 ## Hydropsyche
-Hydropsyche.80.size <- ((biomass.1980s$Hydropsyche)/(density.1980s$Hydropsyche))
-Hydropsyche.10.size <- ((biomass.2010s$Hydropsyche)/(density.2010s$Hydropsyche))
+Hydropsyche.80.size <- ((biomass.1980s$Hydropsyche) / (density.1980s$Hydropsyche))
+Hydropsyche.10.size <- ((biomass.2010s$Hydropsyche) / (density.2010s$Hydropsyche))
 
 ## Cheumatopsyche
-Cheumatopsyche.80.size <- ((biomass.1980s$Cheumatopsyche)/(density.1980s$Cheumatopsyche))
-Cheumatopsyche.10.size <- ((biomass.2010s$Cheumatopsyche)/(density.2010s$Cheumatopsyche))
+Cheumatopsyche.80.size <- ((biomass.1980s$Cheumatopsyche) / (density.1980s$Cheumatopsyche))
+Cheumatopsyche.10.size <- ((biomass.2010s$Cheumatopsyche) / (density.2010s$Cheumatopsyche))
 
 ## Chimarra
-Chimarra.80.size <- ((biomass.1980s$Chimarra)/(density.1980s$Chimarra))
-Chimarra.10.size <- ((biomass.2010s$Chimarra)/(density.2010s$Chimarra))
+Chimarra.80.size <- ((biomass.1980s$Chimarra) / (density.1980s$Chimarra))
+Chimarra.10.size <- ((biomass.2010s$Chimarra) / (density.2010s$Chimarra))
 
 ## Heptageniidae
-Heptageniidae.80.size <- ((biomass.1980s$Heptageniidae)/(density.1980s$Heptageniidae))
-Heptageniidae.10.size <- ((biomass.2010s$Heptageniidae)/(density.2010s$Heptageniidae))
+Heptageniidae.80.size <- ((biomass.1980s$Heptageniidae) / (density.1980s$Heptageniidae))
+Heptageniidae.10.size <- ((biomass.2010s$Heptageniidae) / (density.2010s$Heptageniidae))
 
 ## Chironomidae
-Chironomidae.80.size <- ((biomass.1980s$Chironomidae)/(density.1980s$Chironomidae))
-Chironomidae.10.size <- ((biomass.2010s$Chironomidae)/(density.2010s$Chironomidae))
+Chironomidae.80.size <- ((biomass.1980s$Chironomidae) / (density.1980s$Chironomidae))
+Chironomidae.10.size <- ((biomass.2010s$Chironomidae) / (density.2010s$Chironomidae))
 
 ## Corydalus
-Corydalus.80.size <- ((biomass.1980s$Corydalus)/(density.1980s$Corydalus))
-Corydalus.10.size <- ((biomass.2010s$Corydalus)/(density.2010s$Corydalus))
+Corydalus.80.size <- ((biomass.1980s$Corydalus) / (density.1980s$Corydalus))
+Corydalus.10.size <- ((biomass.2010s$Corydalus) / (density.2010s$Corydalus))
 
 ## Paragnetina
-Paragnetina.80.size <- ((biomass.1980s$Paragnetina)/(density.1980s$Paragnetina))
-Paragnetina.10.size <- ((biomass.2010s$Paragnetina)/(density.2010s$Paragnetina))
+Paragnetina.80.size <- ((biomass.1980s$Paragnetina) / (density.1980s$Paragnetina))
+Paragnetina.10.size <- ((biomass.2010s$Paragnetina) / (density.2010s$Paragnetina))
 
 ## Neurocordulia
-Neurocordulia.80.size <- ((biomass.1980s$Neurocordulia)/(density.1980s$Neurocordulia))
-Neurocordulia.10.size <- ((biomass.2010s$Neurocordulia)/(density.2010s$Neurocordulia))
+Neurocordulia.80.size <- ((biomass.1980s$Neurocordulia) / (density.1980s$Neurocordulia))
+Neurocordulia.10.size <- ((biomass.2010s$Neurocordulia) / (density.2010s$Neurocordulia))
 ```
 
 \newpage
 
 ```{r Hydrospyche Body Size t-Test, results = FALSE}
 ## Hydrospyche
-t.test(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001),
+  paired = FALSE
+)
 # t = 1.8613, df = 46.739, P-value = 0.069
 
 cohens_d(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001))
@@ -2369,8 +2408,9 @@ cohens_d(log(Hydropsyche.80.size + 0.00001), log(Hydropsyche.10.size + 0.00001))
 
 ```{r Cheumatopsyche Body Size t-Test, results = FALSE}
 ## Cheumatopsyche
-t.test(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.00001),
+  paired = FALSE
+)
 # t = 5.1915, df = 46.86, P-value < 0.001
 
 cohens_d(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.00001))
@@ -2381,8 +2421,9 @@ cohens_d(log(Cheumatopsyche.80.size + 0.00001), log(Cheumatopsyche.10.size + 0.0
 
 ```{r Chimarra Body Size t-Test, results = FALSE}
 ## Chimarra
-t.test(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001),
+  paired = FALSE
+)
 # t = 0.42278, df = 44.042, P-value = 0.675
 
 cohens_d(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001))
@@ -2393,8 +2434,9 @@ cohens_d(log(Chimarra.80.size + 0.00001), log(Chimarra.10.size + 0.00001))
 
 ```{r Heptageniidae Body Size t-Test, results = FALSE}
 ## Heptageniidae
-t.test(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001),
+  paired = FALSE
+)
 # t = -0.40634, df = 46.633, P-value = 0.686
 
 cohens_d(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.00001))
@@ -2405,8 +2447,9 @@ cohens_d(log(Heptageniidae.80.size + 0.00001), log(Heptageniidae.10.size + 0.000
 
 ```{r Chironomidae Body Size t-Test, results = FALSE}
 ## Chironomidae
-t.test(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001),
+  paired = FALSE
+)
 # t = -0.17408, df = 46.334, P-value = 0.863
 
 cohens_d(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001))
@@ -2417,8 +2460,9 @@ cohens_d(log(Chironomidae.80.size + 0.00001), log(Chironomidae.10.size + 0.00001
 
 ```{r Corydalus Body Size t-Test, results = FALSE}
 ## Corydalus
-t.test(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001), 
-       paired = FALSE)
+t.test(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001),
+  paired = FALSE
+)
 # t = 1.2464, df = 31.152, P-value = 0.222
 
 cohens_d(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001))
@@ -2429,8 +2473,9 @@ cohens_d(log(Corydalus.80.size + 0.00001), log(Corydalus.10.size + 0.00001))
 
 ```{r Paragnetina Body Size t-Test, results = FALSE}
 ## Paragnetina
-t.test(Paragnetina.80.size + 0.00001, Paragnetina.10.size + 0.00001, 
-       paired = FALSE)
+t.test(Paragnetina.80.size + 0.00001, Paragnetina.10.size + 0.00001,
+  paired = FALSE
+)
 # t = 0.2442, df = 26.9, P-value = 0.809
 
 cohens_d(log(Paragnetina.80.size + 0.00001), log(Paragnetina.10.size + 0.00001))
@@ -2441,8 +2486,9 @@ cohens_d(log(Paragnetina.80.size + 0.00001), log(Paragnetina.10.size + 0.00001))
 
 ```{r Neurocordulia Body Size t-Test, results = FALSE}
 ## Neurocordulia
-t.test(Neurocordulia.80.size + 0.00001, Neurocordulia.10.size + 0.00001, 
-       paired = FALSE)
+t.test(Neurocordulia.80.size + 0.00001, Neurocordulia.10.size + 0.00001,
+  paired = FALSE
+)
 # t = 1.3378, df = 28.187, P-value = 0.192
 
 cohens_d(log(Neurocordulia.80.size + 0.00001), log(Neurocordulia.10.size + 0.00001))
@@ -2462,8 +2508,8 @@ Community composition was evaluated by calculating a Bray-Curtis distance matrix
 ## Data management for the PERMANOVA
 # Sample information for the distance matrix
 distance.matrix.info <- biomass.data %>%
-	select(UID, Year, Season, Period, Mean_Discharge, Water_Temperature) %>%
-	na.omit()
+  select(UID, Year, Season, Period, Mean_Discharge, Water_Temperature) %>%
+  na.omit()
 
 # Taxa-by-abundance community matrix
 community.matrix <- log(invertebrate.biomass.matrix + 1)
@@ -2493,29 +2539,29 @@ stressplot(BC.NMDS.biomass, las = 1)
 ```{r PERMANOVA, echo = TRUE, eval = FALSE}
 ## PERMANOVA by period, season, and the interaction
 community.composition.PERMANOVA <- adonis2(
-	BC.distance.biomass ~ Period + Season + Period:Season
-	                      + Mean_Discharge + Water_Temperature
-	                      + Mean_Discharge:Water_Temperature
-	                      + Mean_Discharge:Period + Mean_Discharge:Season
-	                      + Mean_Discharge:Period:Season
-	                      + Water_Temperature:Period + Water_Temperature:Season
-	                      + Water_Temperature:Period:Season,
-	data = distance.matrix.info, 
-	permutations = 10000
-	)
+  BC.distance.biomass ~ Period + Season + Period:Season
+    + Mean_Discharge + Water_Temperature
+    + Mean_Discharge:Water_Temperature
+    + Mean_Discharge:Period + Mean_Discharge:Season
+    + Mean_Discharge:Period:Season
+    + Water_Temperature:Period + Water_Temperature:Season
+    + Water_Temperature:Period:Season,
+  data = distance.matrix.info,
+  permutations = 10000
+)
 ```
 
 \vspace{10pt}
 
 ```{r PERMANOVA Summary Table, echo = FALSE}
 kable(
-	tidy(community.composition.PERMANOVA),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Summary of the PERMANOVA comparing composition by period, season, mean discharge, and water temperature, with selected two- and three-way interaction terms.",
-	col.names = c("Term", "df", "Sums-of-Squares", "R2", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(community.composition.PERMANOVA),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Summary of the PERMANOVA comparing composition by period, season, mean discharge, and water temperature, with selected two- and three-way interaction terms.",
+  col.names = c("Term", "df", "Sums-of-Squares", "R2", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 
@@ -2537,24 +2583,24 @@ period.groups <- c(rep(1, 25), rep(2, 24))
 ```{r Run the Indicator Taxa Analysis, echo = TRUE, eval = FALSE}
 ## Run indicator analysis comparing by period
 indicator.analysis <- multipatt(
-	community.matrix,
-	period.groups,
-	control = how(nperm = 10000)
-	)
+  community.matrix,
+  period.groups,
+  control = how(nperm = 10000)
+)
 ```
 
 \vspace{10pt}
 
 ```{r Indicator Taxa Summary Table, echo = FALSE}
 kable(
-	indicator.analysis$sign,
-	booktabs = TRUE,
-	digits = 3,
-	longtable = TRUE,
-	caption = "Summary table of the sign of the relationship from the indicator taxa analysis.",
-	col.names = c("1980s", "2010s", "Index", "Test Statistic", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped", "repeat_header"))
+  indicator.analysis$sign,
+  booktabs = TRUE,
+  digits = 3,
+  longtable = TRUE,
+  caption = "Summary table of the sign of the relationship from the indicator taxa analysis.",
+  col.names = c("1980s", "2010s", "Index", "Test Statistic", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "repeat_header"))
 ```
 
 
@@ -2576,9 +2622,9 @@ with the ANCOVA fitted using `lm()` and model assumptions checked using `check_m
 
 ```{r Carbon & Discharge ANCOVA, echo = TRUE}
 carbon.discharge.ancova <- lm(
-	log(Carbon) ~ log(Mean_Discharge) * Period,
-	data = biomass.data
-	)
+  log(Carbon) ~ log(Mean_Discharge) * Period,
+  data = biomass.data
+)
 ```
 
 \vspace{10pt}
@@ -2591,13 +2637,13 @@ check_model(carbon.discharge.ancova)
 
 ```{r Carbon & Discharge ANCOVA: Summary Table, echo = FALSE}
 kable(
-	tidy(Anova(carbon.discharge.ancova, type = "II")),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Summary of the carbon by discharge ANCOVA.",
-	col.names = c("Term", "Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(Anova(carbon.discharge.ancova, type = "II")),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Summary of the carbon by discharge ANCOVA.",
+  col.names = c("Term", "Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -2605,22 +2651,22 @@ kable(
 ```{r Carbon & Discharge ANCOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the discharge ANOVA
 carbon.discharge.ancova.eta.squared <- eta_squared(
-	Anova(carbon.discharge.ancova, type = "II"),
-	partial = TRUE
-	)
+  Anova(carbon.discharge.ancova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Carbon & Discharge ANCOVA: Effect Size Table, echo = FALSE}
 kable(
-	carbon.discharge.ancova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the carbon by discharge ANCOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  carbon.discharge.ancova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the carbon by discharge ANCOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 
@@ -2638,25 +2684,21 @@ save.image("data_analysis/OGC-biomass-primary_analyses-workspace.RData")
 # R Session Information
 
 ```{r R Packages, echo = FALSE}
-df_session_packages <- devtools::session_info()$packages %>% 
-  as.data.frame(.) %>% 
-  filter(attached == TRUE) %>% 
-  dplyr::select(loadedversion, date) %>% 
-  rownames_to_column
+df_session_packages <- devtools::session_info()$packages %>%
+  as.data.frame(.) %>%
+  filter(attached == TRUE) %>%
+  dplyr::select(loadedversion, date) %>%
+  rownames_to_column()
 
 colnames(df_session_packages) <- c("Package", "Loaded Version", "Date")
 
 kable(
-  df_session_packages, 
+  df_session_packages,
   booktabs = TRUE,
   caption = "Packages for data management and analyses."
-  ) %>%
-	kable_styling(
-		full_width = FALSE,
-  	latex_options = c("HOLD_position", "striped")
-  	) 
+) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("HOLD_position", "striped")
+  )
 ```
-
-
-
-

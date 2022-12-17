@@ -44,15 +44,17 @@ library(waterData)
 ```{r Load Data, echo = TRUE}
 ## Read in sampling period environmental data
 environmental.data <- read_csv(
-	"data/OGC_final_biomass_data.csv",
-	show_col_types = FALSE
-	) %>%
-	select(UID, Year, Season, Period, CaCO, Carbon, Conductivity, DO, pH,
-				 Water_Temperature, Air_Temperature, Precipitation, Mean_Discharge)
+  "data/OGC_final_biomass_data.csv",
+  show_col_types = FALSE
+) %>%
+  select(
+    UID, Year, Season, Period, CaCO, Carbon, Conductivity, DO, pH,
+    Water_Temperature, Air_Temperature, Precipitation, Mean_Discharge
+  )
 
 ## Set variables as factors
-environmental.data$UID    <- as_factor(environmental.data$UID)
-environmental.data$Year   <- as_factor(environmental.data$Year)
+environmental.data$UID <- as_factor(environmental.data$UID)
+environmental.data$Year <- as_factor(environmental.data$Year)
 environmental.data$Season <- as_factor(environmental.data$Season)
 environmental.data$Period <- as_factor(environmental.data$Period)
 
@@ -71,34 +73,38 @@ We obtained average daily discharge (m^3^ s^-1^) and water chemistry metrics fro
 
 ```{r Water Data: Data Management, echo = TRUE}
 ## List of start dates
-start.dates <- c("1981-12-02", "1982-01-09", "1982-02-15", "1982-03-09",
-                 "1982-04-02", "1982-04-30", "1982-05-25", "1982-06-26",
-                 "1982-07-23", "1982-08-19", "1982-09-15", "1982-10-15",
-                 "1982-11-18", "1982-12-24", "1983-01-22", "1983-02-18",
-                 "1983-03-25", "1983-04-23", "1983-05-20", "1983-06-17",
-                 "1983-07-15", "1983-08-13", "1983-09-09", "1983-10-08",
-                 "1983-11-04",
-                 "2015-06-26", "2015-07-27", "2015-08-29", "2015-10-02",
-                 "2015-11-06", "2015-12-03", "2016-01-21", "2016-02-24",
-                 "2016-03-30", "2016-04-27", "2016-05-31", "2016-08-03",
-                 "2016-09-05", "2016-10-05", "2016-11-02", "2016-11-30",
-                 "2017-01-06", "2017-02-10", "2017-03-08", "2017-04-12",
-                 "2017-05-03", "2017-05-29", "2017-07-05", "2017-08-08")
+start.dates <- c(
+  "1981-12-02", "1982-01-09", "1982-02-15", "1982-03-09",
+  "1982-04-02", "1982-04-30", "1982-05-25", "1982-06-26",
+  "1982-07-23", "1982-08-19", "1982-09-15", "1982-10-15",
+  "1982-11-18", "1982-12-24", "1983-01-22", "1983-02-18",
+  "1983-03-25", "1983-04-23", "1983-05-20", "1983-06-17",
+  "1983-07-15", "1983-08-13", "1983-09-09", "1983-10-08",
+  "1983-11-04",
+  "2015-06-26", "2015-07-27", "2015-08-29", "2015-10-02",
+  "2015-11-06", "2015-12-03", "2016-01-21", "2016-02-24",
+  "2016-03-30", "2016-04-27", "2016-05-31", "2016-08-03",
+  "2016-09-05", "2016-10-05", "2016-11-02", "2016-11-30",
+  "2017-01-06", "2017-02-10", "2017-03-08", "2017-04-12",
+  "2017-05-03", "2017-05-29", "2017-07-05", "2017-08-08"
+)
 
 ## List of end dates
-end.dates <- c("1981-12-16", "1982-01-23", "1982-03-01", "1982-03-23",
-               "1982-04-16", "1982-05-14", "1982-06-08", "1982-07-10",
-               "1982-08-06", "1982-09-02", "1982-09-29", "1982-10-29",
-               "1982-12-02", "1983-01-07", "1983-02-05", "1983-03-04",
-               "1983-04-08", "1983-05-07", "1983-06-03", "1983-07-01",
-               "1983-07-29", "1983-08-27", "1983-09-23", "1983-10-22",
-               "1983-11-18",
-               "2015-07-10", "2015-08-10", "2015-09-12", "2015-10-16",
-               "2015-11-20", "2015-12-17", "2016-02-04", "2016-03-09",
-               "2016-04-13", "2016-05-11", "2016-06-14", "2016-08-17", 
-               "2016-09-19", "2016-10-19", "2016-11-16", "2016-12-14", 
-               "2017-01-20", "2017-02-24", "2017-03-22", "2017-04-26",
-               "2017-05-17", "2017-06-12", "2017-07-19", "2017-08-22")
+end.dates <- c(
+  "1981-12-16", "1982-01-23", "1982-03-01", "1982-03-23",
+  "1982-04-16", "1982-05-14", "1982-06-08", "1982-07-10",
+  "1982-08-06", "1982-09-02", "1982-09-29", "1982-10-29",
+  "1982-12-02", "1983-01-07", "1983-02-05", "1983-03-04",
+  "1983-04-08", "1983-05-07", "1983-06-03", "1983-07-01",
+  "1983-07-29", "1983-08-27", "1983-09-23", "1983-10-22",
+  "1983-11-18",
+  "2015-07-10", "2015-08-10", "2015-09-12", "2015-10-16",
+  "2015-11-20", "2015-12-17", "2016-02-04", "2016-03-09",
+  "2016-04-13", "2016-05-11", "2016-06-14", "2016-08-17",
+  "2016-09-19", "2016-10-19", "2016-11-16", "2016-12-14",
+  "2017-01-20", "2017-02-24", "2017-03-22", "2017-04-26",
+  "2017-05-17", "2017-06-12", "2017-07-19", "2017-08-22"
+)
 
 ## Bind start and end dates into a single dataframe
 flow.dates <- as.data.frame(cbind(start.dates, end.dates))
@@ -114,14 +120,18 @@ flow.dates$UID <- environmental.data$UID
 discharge.data <- tibble(data.frame(matrix(0, nrow = 15, ncol = 49)))
 
 ## Append data for all dates
-for(x in 1:49){
+for (x in 1:49) {
   require(waterData)
-  bin.1 <- importDVs(staid = "02202500", code = "00060", stat = "00003",
-                     sdate = flow.dates[x, 1],
-                     edate = flow.dates[x, 2])
+  bin.1 <- importDVs(
+    staid = "02202500", code = "00060", stat = "00003",
+    sdate = flow.dates[x, 1],
+    edate = flow.dates[x, 2]
+  )
   bin.2 <- cleanUp(bin.1, task = "fix", replace = 0.001)
-  bin.3 <- fillMiss(bin.1, block = 2, pmiss = 5, model = "trend", 
-                    smooth = FALSE, log = "y")
+  bin.3 <- fillMiss(bin.1,
+    block = 2, pmiss = 5, model = "trend",
+    smooth = FALSE, log = "y"
+  )
   bin.4 <- bin.3[, c(2, 3)]
   colnames(bin.4) <- c(flow.dates[x, 3])
   discharge.data[, x] <- bin.4[, 1]
@@ -133,11 +143,11 @@ for(x in 1:49){
 ```{r Water Data; Cleanup, echo = TRUE, eval = FALSE}
 ## Calculate two week mean & convert from ft3 to m3
 mean.discharge <- sapply(discharge.data, mean)
-metric.shift   <- (mean.discharge / 35.315)
+metric.shift <- (mean.discharge / 35.315)
 
 ## Create mean discharge dataframe
-metric.shift            <- tibble(mean.discharge)
-metric.shift$UID        <- environmental.data$UID
+metric.shift <- tibble(mean.discharge)
+metric.shift$UID <- environmental.data$UID
 ```
 
 
@@ -157,8 +167,9 @@ ANOVAs were conducted for discharge, precipitation, water temperature, and air t
 
 ```{r Discharge ANOVA, echo = TRUE}
 discharge.anova <- lm(
-	log(Mean_Discharge) ~ Period * Season, data = environmental.data
-	)
+  log(Mean_Discharge) ~ Period * Season,
+  data = environmental.data
+)
 ```
 
 \vspace{10pt}
@@ -171,13 +182,13 @@ check_model(discharge.anova)
 
 ```{r Discharge ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(discharge.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for discharge by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(discharge.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for discharge by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -185,22 +196,22 @@ kable(
 ```{r Discharge ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the discharge ANOVA
 discharge.anova.eta.squared <- eta_squared(
-	Anova(discharge.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(discharge.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Discharge ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	discharge.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the discharge ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  discharge.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the discharge ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -209,109 +220,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 discharge.anova.emmeans.period <- emmeans(
-	discharge.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  discharge.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 discharge.anova.emmeans.season <- emmeans(
-	discharge.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  discharge.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 discharge.anova.emmeans.period.season <- emmeans(
-	discharge.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  discharge.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Discharge ANOVA, echo = FALSE}
 kable(
-	tidy(discharge.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the discharge ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(discharge.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the discharge ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period x Season): Discharge ANOVA, echo = FALSE}
 kable(
-	tidy(discharge.anova.emmeans.period.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period and season in the discharge ANOVA.",
-	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(discharge.anova.emmeans.period.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period and season in the discharge ANOVA.",
+  col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Discharge ANOVA, echo = FALSE}
 kable(
-	tidy(discharge.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the discharge ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(discharge.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the discharge ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period x Season): Discharge ANOVA, echo = FALSE}
 kable(
-	tidy(discharge.anova.emmeans.period.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by period and season in the discharge ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(discharge.anova.emmeans.period.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by period and season in the discharge ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Discharge ANOVA, echo = FALSE}
 kable(
-	eff_size(discharge.anova.emmeans.season,
-					 sigma = sigma(discharge.anova),
-					 edf = df.residual(discharge.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the discharge ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(discharge.anova.emmeans.season,
+    sigma = sigma(discharge.anova),
+    edf = df.residual(discharge.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the discharge ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period x Season): Discharge ANOVA, echo = FALSE}
 kable(
-	eff_size(discharge.anova.emmeans.period.season,
-					 sigma = sigma(discharge.anova),
-					 edf = df.residual(discharge.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period and season in the discharge ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(discharge.anova.emmeans.period.season,
+    sigma = sigma(discharge.anova),
+    edf = df.residual(discharge.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period and season in the discharge ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -322,8 +335,9 @@ kable(
 
 ```{r Carbon ANOVA, echo = TRUE}
 carbon.anova <- lm(
-	Carbon ~ Period * Season, data = environmental.data
-	)
+  Carbon ~ Period * Season,
+  data = environmental.data
+)
 ```
 
 \vspace{10pt}
@@ -336,13 +350,13 @@ check_model(carbon.anova)
 
 ```{r Carbon ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(carbon.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for carbon by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(carbon.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for carbon by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -350,22 +364,22 @@ kable(
 ```{r Carbon ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the carbon ANOVA
 carbon.anova.eta.squared <- eta_squared(
-	Anova(carbon.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(carbon.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Carbon ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	carbon.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the carbon ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  carbon.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the carbon ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -374,109 +388,111 @@ kable(
 ## Calculate estimated marginal means
 # Period
 carbon.anova.emmeans.period <- emmeans(
-	carbon.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  carbon.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 carbon.anova.emmeans.season <- emmeans(
-	carbon.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  carbon.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 carbon.anova.emmeans.period.season <- emmeans(
-	carbon.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  carbon.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Carbon ANOVA, echo = FALSE}
 kable(
-	tidy(carbon.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the carbon ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(carbon.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the carbon ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Period x Season): Carbon ANOVA, echo = FALSE}
 kable(
-	tidy(carbon.anova.emmeans.period.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by period and season in the carbon ANOVA.",
-	col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(carbon.anova.emmeans.period.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by period and season in the carbon ANOVA.",
+  col.names = c("Period", "Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Carbon ANOVA, echo = FALSE}
 kable(
-	tidy(carbon.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the carbon ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(carbon.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the carbon ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Period x Season): Carbon ANOVA, echo = FALSE}
 kable(
-	tidy(carbon.anova.emmeans.period.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by period and season in the carbon ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(carbon.anova.emmeans.period.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by period and season in the carbon ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Carbon ANOVA, echo = FALSE}
 kable(
-	eff_size(carbon.anova.emmeans.season,
-					 sigma = sigma(carbon.anova),
-					 edf = df.residual(carbon.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the carbon ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(carbon.anova.emmeans.season,
+    sigma = sigma(carbon.anova),
+    edf = df.residual(carbon.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the carbon ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Period x Season): Carbon ANOVA, echo = FALSE}
 kable(
-	eff_size(carbon.anova.emmeans.period.season,
-					 sigma = sigma(carbon.anova),
-					 edf = df.residual(carbon.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by period and season in the carbon ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(carbon.anova.emmeans.period.season,
+    sigma = sigma(carbon.anova),
+    edf = df.residual(carbon.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by period and season in the carbon ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -485,8 +501,9 @@ kable(
 
 ```{r Precipitation ANOVA, echo = TRUE}
 precipitation.anova <- lm(
-	Precipitation ~ Period * Season, data = environmental.data
-	)
+  Precipitation ~ Period * Season,
+  data = environmental.data
+)
 ```
 
 \vspace{10pt}
@@ -499,13 +516,13 @@ check_model(precipitation.anova)
 
 ```{r Precipitation ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(precipitation.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for precipitation by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(precipitation.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for precipitation by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -513,22 +530,22 @@ kable(
 ```{r Precipitation ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the precipitation ANOVA
 precipitation.anova.eta.squared <- eta_squared(
-	Anova(precipitation.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(precipitation.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Precipitation ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	precipitation.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the precipitation ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  precipitation.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the precipitation ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -537,68 +554,69 @@ kable(
 ## Calculate estimated marginal means
 # Period
 precipitation.anova.emmeans.period <- emmeans(
-	precipitation.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  precipitation.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 precipitation.anova.emmeans.season <- emmeans(
-	precipitation.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  precipitation.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 precipitation.anova.emmeans.period.season <- emmeans(
-	precipitation.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  precipitation.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Precipitation ANOVA, echo = FALSE}
 kable(
-	tidy(precipitation.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the precipitation ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(precipitation.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the precipitation ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Precipitation ANOVA, echo = FALSE}
 kable(
-	tidy(precipitation.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the precipitation ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(precipitation.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the precipitation ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Precipitation ANOVA, echo = FALSE}
 kable(
-	eff_size(precipitation.anova.emmeans.season,
-					 sigma = sigma(precipitation.anova),
-					 edf = df.residual(precipitation.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the precipitation ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(precipitation.anova.emmeans.season,
+    sigma = sigma(precipitation.anova),
+    edf = df.residual(precipitation.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the precipitation ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -607,8 +625,9 @@ kable(
 
 ```{r Water Temperature ANOVA, echo = TRUE}
 water.temperature.anova <- lm(
-	Water_Temperature ~ Period * Season, data = environmental.data
-	)
+  Water_Temperature ~ Period * Season,
+  data = environmental.data
+)
 ```
 
 \vspace{10pt}
@@ -621,13 +640,13 @@ check_model(water.temperature.anova)
 
 ```{r Water Temperature ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(water.temperature.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for water temperature by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(water.temperature.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for water temperature by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -635,22 +654,22 @@ kable(
 ```{r Water Temperature ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the water temperature ANOVA
 water.temperature.anova.eta.squared <- eta_squared(
-	Anova(water.temperature.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(water.temperature.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Water Temperature ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	water.temperature.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the water temperature ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  water.temperature.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the water temperature ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -659,68 +678,69 @@ kable(
 ## Calculate estimated marginal means
 # Period
 water.temperature.anova.emmeans.period <- emmeans(
-	water.temperature.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  water.temperature.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 water.temperature.anova.emmeans.season <- emmeans(
-	water.temperature.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  water.temperature.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 water.temperature.anova.emmeans.period.season <- emmeans(
-	water.temperature.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  water.temperature.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Water Temperature ANOVA, echo = FALSE}
 kable(
-	tidy(water.temperature.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the water temperature ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(water.temperature.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the water temperature ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Water Temperature ANOVA, echo = FALSE}
 kable(
-	tidy(water.temperature.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the water temperature ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(water.temperature.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the water temperature ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Water Temperature ANOVA, echo = FALSE}
 kable(
-	eff_size(water.temperature.anova.emmeans.season,
-					 sigma = sigma(water.temperature.anova),
-					 edf = df.residual(water.temperature.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the water temperature ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(water.temperature.anova.emmeans.season,
+    sigma = sigma(water.temperature.anova),
+    edf = df.residual(water.temperature.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the water temperature ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -729,8 +749,9 @@ kable(
 
 ```{r Air Temperature ANOVA, echo = TRUE}
 air.temperature.anova <- lm(
-	Air_Temperature ~ Period * Season, data = environmental.data
-	)
+  Air_Temperature ~ Period * Season,
+  data = environmental.data
+)
 ```
 
 \vspace{10pt}
@@ -743,13 +764,13 @@ check_model(air.temperature.anova)
 
 ```{r Air Temperature ANOVA: ANOVA Table, echo = FALSE}
 kable(
-	Anova(air.temperature.anova, type = "II"),
-	booktabs = TRUE,
-	digits = 3,
-	caption = "ANOVA results for air temperature by period, season, and the interaction.",
-	col.names = c("Sums-of-Squares", "df", "F", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  Anova(air.temperature.anova, type = "II"),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "ANOVA results for air temperature by period, season, and the interaction.",
+  col.names = c("Sums-of-Squares", "df", "F", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -757,22 +778,22 @@ kable(
 ```{r Air Temperature ANOVA: Effect Sizes, include = FALSE}
 ## Calculating partial eta-squared for each factor in the air temperature ANOVA
 air.temperature.anova.eta.squared <- eta_squared(
-	Anova(air.temperature.anova, type = "II"),
-	partial = TRUE
-	)
+  Anova(air.temperature.anova, type = "II"),
+  partial = TRUE
+)
 ```
 
 \vspace{10pt}
 
 ```{r Air Temperature ANOVA: Effect Size Table, echo = FALSE}
 kable(
-	air.temperature.anova.eta.squared,
-	booktabs = TRUE,
-	digits = 3,
-	caption = "Table of the effect sizes in the air temperature ANOVA.",
-	col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  air.temperature.anova.eta.squared,
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Table of the effect sizes in the air temperature ANOVA.",
+  col.names = c("Term", "Eta-squared", "CI", "CI Low", "CI High")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
@@ -781,68 +802,69 @@ kable(
 ## Calculate estimated marginal means
 # Period
 air.temperature.anova.emmeans.period <- emmeans(
-	air.temperature.anova,
-	specs = pairwise ~ Period,
-	weights = "cells",
-	adjust = "none"
-	)
+  air.temperature.anova,
+  specs = pairwise ~ Period,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Season
 air.temperature.anova.emmeans.season <- emmeans(
-	air.temperature.anova,
-	specs = pairwise ~ Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  air.temperature.anova,
+  specs = pairwise ~ Season,
+  weights = "cells",
+  adjust = "none"
+)
 
 # Period x Season
 air.temperature.anova.emmeans.period.season <- emmeans(
-	air.temperature.anova,
-	specs = pairwise ~ Period + Season,
-	weights = "cells",
-	adjust = "none"
-	)
+  air.temperature.anova,
+  specs = pairwise ~ Period + Season,
+  weights = "cells",
+  adjust = "none"
+)
 ```
 
 \vspace{10pt}
 
 ```{r Estimated Marginal Means (Season): Air Temperature ANOVA, echo = FALSE}
 kable(
-	tidy(air.temperature.anova.emmeans.season$emmeans),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Estimated marginal means by season in the air temperature ANOVA.",
-	col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
-	) %>% 
-	kable_styling(latex_options = c("HOLD_position", "striped"))
+  tidy(air.temperature.anova.emmeans.season$emmeans),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Estimated marginal means by season in the air temperature ANOVA.",
+  col.names = c("Season", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrasts (Season): Air Temperature ANOVA, echo = FALSE}
 kable(
-	tidy(air.temperature.anova.emmeans.season$contrasts),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Pairwise contrasts by season in the air temperature ANOVA.",
-	col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  tidy(air.temperature.anova.emmeans.season$contrasts),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Pairwise contrasts by season in the air temperature ANOVA.",
+  col.names = c("Term", "Contrast", "Null Value", "Estimate", "SE", "df", "t", "P-value")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 \vspace{10pt}
 
 ```{r Contrast Effect Sizes (Season): Air Temperature ANOVA, echo = FALSE}
 kable(
-	eff_size(air.temperature.anova.emmeans.season,
-					 sigma = sigma(air.temperature.anova),
-					 edf = df.residual(air.temperature.anova)),
-	booktabs = TRUE, 
-	digits = 3, 
-	caption = "Effect sizes for the pairwise contrasts by season in the air temperature ANOVA.",
-	col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
-	) %>%
-	kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
+  eff_size(air.temperature.anova.emmeans.season,
+    sigma = sigma(air.temperature.anova),
+    edf = df.residual(air.temperature.anova)
+  ),
+  booktabs = TRUE,
+  digits = 3,
+  caption = "Effect sizes for the pairwise contrasts by season in the air temperature ANOVA.",
+  col.names = c("Contrast", "Cohen's d", "SE", "df", "CI Lower", "CI Upper")
+) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped", "scale_down"))
 ```
 
 
@@ -858,13 +880,13 @@ We obtained historical USGS discharge data from December 1969 to November 2018 t
 ```{r Load Long-Term Environmental Data, echo = TRUE}
 ## Read in long-term environmental data
 long.term.environmental.data <- read_csv(
-	"data/OGC_long_term_environmental_data.csv",
-	show_col_types = FALSE
-	)
+  "data/OGC_long_term_environmental_data.csv",
+  show_col_types = FALSE
+)
 
 ## Subset data by season groups
 winter.spring.data <- long.term.environmental.data %>%
-	filter(Season_Group == "WinterSpring")
+  filter(Season_Group == "WinterSpring")
 ```
 
 \vspace{10pt}
@@ -874,34 +896,34 @@ winter.spring.data <- long.term.environmental.data %>%
 
 ## Winter-spring discharge
 winter.spring.discharge <- aggregate(
-	Mean_Discharge ~ Year,
-	data = winter.spring.data,
-	FUN = mean
-	)
+  Mean_Discharge ~ Year,
+  data = winter.spring.data,
+  FUN = mean
+)
 
 ## Winter-spring precipitation
 winter.spring.precipitation <- aggregate(
-	Precipitation ~ Year,
-	data = winter.spring.data,
-	FUN = mean
-	) %>%
-	na.omit()
+  Precipitation ~ Year,
+  data = winter.spring.data,
+  FUN = mean
+) %>%
+  na.omit()
 
 ## Winter-spring water temperature
 winter.spring.water.temperature <- aggregate(
-	Water_Temperature ~ Year,
-	data = winter.spring.data,
-	FUN = mean
-	) %>%
-	na.omit()
+  Water_Temperature ~ Year,
+  data = winter.spring.data,
+  FUN = mean
+) %>%
+  na.omit()
 
 ## Winter-spring air temperature
 winter.spring.air.temperature <- aggregate(
-	Air_Temperature ~ Year,
-	data = winter.spring.data,
-	FUN = mean
-	) %>%
-	na.omit()
+  Air_Temperature ~ Year,
+  data = winter.spring.data,
+  FUN = mean
+) %>%
+  na.omit()
 ```
 
 
@@ -955,26 +977,21 @@ save.image("data_analysis/OGC-biomass-environmental_comparisons-workspace.RData"
 
 
 ```{r R Packages, echo = FALSE}
-df_session_packages <- devtools::session_info()$packages %>% 
-  as.data.frame(.) %>% 
-  filter(attached == TRUE) %>% 
-  dplyr::select(loadedversion, date) %>% 
-  rownames_to_column
+df_session_packages <- devtools::session_info()$packages %>%
+  as.data.frame(.) %>%
+  filter(attached == TRUE) %>%
+  dplyr::select(loadedversion, date) %>%
+  rownames_to_column()
 
 colnames(df_session_packages) <- c("Package", "Loaded Version", "Date")
 
 kable(
-  df_session_packages, 
+  df_session_packages,
   booktabs = TRUE,
   caption = "Packages for data management and analyses."
-  ) %>%
-	kable_styling(
-		full_width = FALSE,
-  	latex_options = c("HOLD_position", "striped")
-  	) 
+) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("HOLD_position", "striped")
+  )
 ```
-
-
-
-
-
