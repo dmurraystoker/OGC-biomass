@@ -11,7 +11,7 @@ Data, metadata, and all analytical code for the manuscript:
 Murray-Stoker, K. M. et al. Long-term comparison of invertebrate communities in a blackwater river reveals taxon-specific biomass change.
 
 
-[![DOI](https://zenodo.org/badge/441592820.svg)](https://zenodo.org/badge/latestdoi/441592820)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7455905.svg)](https://doi.org/10.5281/zenodo.7455905)
 
 
 ## Abstract
